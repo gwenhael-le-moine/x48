@@ -69,7 +69,7 @@ writing code for RPL debugging. So here go sincere thanks:
 -- Mika Heiskanen <mheiskan@vipunen.hut.fi>
 
 Latest version of SADHP is available from
-        wuarchive.wust.edu:/systems/hp/hp48Uploads/
+	wuarchive.wust.edu:/systems/hp/hp48Uploads/
 Get it to look deeper into your HP48.
 
 
@@ -95,7 +95,7 @@ I would sincerely like to ask HP about giving me a 48 GX, so the world
 could receive more complete x48, also I could use some ROM cards, like
 the EQ-LIB to implement an easy use of these. Well, I credited HP in
 the last releases, but now x48 really gets running and I still haven't
-heard a word from them... 
+heard a word from them...
 Just remember, x48 comes under the terms and conditions of the GPL.
 
 
@@ -117,7 +117,7 @@ INSTALLATION
 I improved handling of differences in Solaris, SunOS, HP/UX, and Linux.
 Things are not perfect, anyway.
 
-To configure some things for the Makefiles, edit 'config.h' in the 
+To configure some things for the Makefiles, edit 'config.h' in the
 directory 'x48-0.4.0'. There you can set the compiler, flags to
 pass to the compiler, and some other stuff.
 
@@ -158,18 +158,18 @@ To get a memory dump you need to do the following:
 
 
 - Download the file 'romdump/ROMDump' to your HP.
- 
+
 - To capture a complete ROM, start kermit on your computer, set the
   line so it fits your HP, set the speed to 9600 baud and type
   'log session', then 'connect'.
- 
+
 - On a HP48 S/SX type '#0h #7FFFFh ROMDump',
   on a HP48 G/GX type '#0h #FFFFFh ROMDump'.
   This will take about 15 minutes on the S/SX, 30 minutes on the G/GX.
- 
+
 - When done, type the kermit-Escape (usually CTRL-\) followed
   by 'C' on your Computer. Say 'quit' to the kermit.
- 
+
 Your ROM should now be in the file 'session.log'.
 
 
@@ -256,7 +256,7 @@ Another way to achive this, is to send SIGTERM or SIGKILL to x48.
 USING RAM CARDS
 ===============
 
-To get a RAM card, use the program 'mkcard' to build the card, and 
+To get a RAM card, use the program 'mkcard' to build the card, and
 copy the resulting file to $HOME/.hp48/port1 or $HOME/.hp48/port2.
 On the next start of the emulator, the card should be detected and
 usable. (Maybe you have to turn it off, and on again...)
@@ -308,7 +308,7 @@ On your computer take an unused xterm, go to the directory where
 you keep your backups, and start kermit. Configure the line:
 
 type 'set line /dev/ttyp2'    <---- use the number from the line
-                                    below the display !!!
+				    below the display !!!
 
 This should be the pseudo terminal connected to your emulator.
 
