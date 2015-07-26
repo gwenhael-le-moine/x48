@@ -1,0 +1,2 @@
+?package(x48):needs="X11|text|vc|wm" section="Apps/Math"\
+  title="x48" command="/usr/bin/x48"

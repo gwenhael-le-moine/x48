@@ -1,0 +1,68 @@
+!
+!  This file is part of x48, an emulator of the HP-48sx Calculator.
+!  Copyright (C) 1994  Eddie C. Dost  <ecd@dressler.de>.
+!
+!  This program is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
+!
+!  This program is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
+!
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+!
+!  $Id: X48.ad,v 1.2 1994/12/07 20:27:35 ecd Exp ecd $
+!
+
+!
+! X11 related stuff
+!
+*iconic:		False
+*visual:		Default
+*mono:			False
+*gray:			False
+*monoIcon:		False
+
+*useXShm:		True
+
+*smallLabelFont:	-*-fixed-bold-r-normal-*-14-*-*-*-*-*-iso8859-1
+*mediumLabelFont:	-*-fixed-bold-r-normal-*-15-*-*-*-*-*-iso8859-1
+*largeLabelFont:	-*-fixed-medium-r-normal-*-20-*-*-*-*-*-iso8859-1
+*connectionFont:	-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-iso8859-1
+
+!
+! informative stuff
+!
+*verbose:		False
+*quiet:			False
+
+*printVersion:		False
+*printCopyright:	False
+*printWarranty:		False
+
+!
+! resources controlling the connections
+!
+*useTerminal:		True
+*useSerial:		False
+*serialLine:		/dev/ttyS0
+
+!
+! stuff controlling initialization
+!
+*completeInitialize:	False
+*resetOnStartup:	False
+*romFileName:		rom.dump
+*homeDirectory:		.hp48
+
+!
+! resources controlling the debugger
+!
+*useDebugger:		True
+*disassemblerMnemonics:	class
+

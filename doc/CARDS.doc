@@ -1,0 +1,16 @@
+Q: How do you dump the Equation Lib?
+
+A: Well, I guess you would have to use some sort of Card copying
+   program from the HP48. This should give you an Image of the card.
+
+   You should convert it into an x48 rom-file. Look at dump2rom.c.
+   There should be changes for the size of the Card!!!
+
+   Then you should copy this to "$HOME/.hp48/port1" or "$HOME/.hp48/port2".
+
+   Change the file to read only, use 'chmod 444 $HOME/.hp48/port1'.
+   The emulator will notice, this is a ROM.
+
+   You are mainly on your own here, I don't have such a card, so I can't
+   try, but I hope it helps.
+
