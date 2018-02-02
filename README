@@ -6,7 +6,7 @@ This is x48, an HP48 CPU emulator. This is Version 0.6.4
 if the 'LCD' is scrambled, you might try running x48 in one of the 3 ways below
 to see if that will solve the problem.
 
-1. run 'x48 +shm'
+1. run 'x48 +xshm'
 2. put 'x48*useXShm: False' in you .Xdefaults file (man xrdb)
 3. run './configure --disable-shm' to build x48 without the Shared memory extention.
 
