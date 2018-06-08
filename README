@@ -10,7 +10,7 @@ to see if that will solve the problem.
 2. put 'x48*useXShm: False' in you .Xdefaults file (man xrdb)
 3. run './configure --disable-shm' to build x48 without the Shared memory extention.
 
-If it does please leave a bug report at https://github.com/cycojesus/x48/issues
+If it does please leave a bug report at https://github.com/gwenhael-le-moine/x48/issues
 
 ======
 
