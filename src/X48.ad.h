@@ -7,7 +7,7 @@
 "*smallLabelFont:	-*-fixed-bold-r-normal-*-14-*-*-*-*-*-iso8859-1",
 "*mediumLabelFont:	-*-fixed-bold-r-normal-*-15-*-*-*-*-*-iso8859-1",
 "*largeLabelFont:	-*-fixed-medium-r-normal-*-20-*-*-*-*-*-iso8859-1",
-"*connectionFont:	-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-iso8859-1",
+"*connectionFont:	-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-1",
 "*verbose:		False",
 "*quiet:			False",
 "*printVersion:		False",
