@@ -3630,6 +3630,7 @@ int     buflen;
 #endif
     case XK_KP_Multiply:
     case XK_asterisk:
+    case XK_comma:
       key_event(BUTTON_MUL, xev);
       wake = 1;
       break;
