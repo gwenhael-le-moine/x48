@@ -97,7 +97,6 @@ AC_DEFINE([PATCHLEVEL], _PATCHLEVEL, [The patch level])
 
 
 AC_DEFINE_UNQUOTED([COMPILE_TIME], "`date`", [Date program was compiled])
-AC_DEFINE([COMPILE_BY], ["G. Allen Morris III"], [Name of person that compiled this program])
 AC_DEFINE([COMPILE_VERSION], [0], [description])
 
 # Checks for library functions.
