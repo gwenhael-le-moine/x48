@@ -74,9 +74,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-#ifdef SUNOS
-#include <memory.h>
-#endif
 
 #include "device.h"
 #include "hp48.h"

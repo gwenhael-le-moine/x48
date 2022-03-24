@@ -102,11 +102,7 @@
 #endif
 #endif
 
-#ifdef SUNOS
-#undef HAVE_STDIO
-#else
 #define HAVE_STDIO 1
-#endif
 
 #ifndef HAVE_STDIO
 #include <stdio.h>

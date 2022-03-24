@@ -61,9 +61,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#ifdef SUNOS
-#include <memory.h>
-#endif
 #include <X11/Xlib.h>
 
 #include "debugger.h"

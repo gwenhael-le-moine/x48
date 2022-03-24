@@ -51,9 +51,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#ifdef SUNOS
-#include <memory.h>
-#endif
 #include <fcntl.h>
 
 unsigned char *core;

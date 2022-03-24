@@ -54,13 +54,6 @@
 /* #define DEBUG_TIMER 1 */
 /* #define DEBUG_TIMER_ADJUST 1 */
 
-#ifdef SOLARIS
-extern int gettimeofday __ProtoType__((struct timeval * tp));
-#endif
-#ifdef SUNOS
-extern int gettimeofday __ProtoType__((struct timeval *, struct timezone *));
-#endif
-
 typedef struct x48_timer_t {
   word_1 run;
   word_64 start;
@@ -117,9 +110,7 @@ word_64 time_offset = 0x0;
  */
 void set_accesstime(void) {
   struct timeval tv;
-#ifndef SOLARIS
   struct timezone tz;
-#endif
   word_64 ticks, timeout, timer2;
   word_20 accesstime_loc, timeout_loc;
   word_20 accesscrc_loc, timeoutclk_loc;
@@ -142,11 +133,7 @@ void set_accesstime(void) {
   systime_offset = -ltm->tm_gmtoff;
 #endif
 
-#ifdef SOLARIS
-  gettimeofday(&tv);
-#else
   gettimeofday(&tv, &tz);
-#endif
   tv.tv_sec -= systime_offset;
 
   ticks = tv.tv_sec;
@@ -205,19 +192,13 @@ void set_accesstime(void) {
 
 void start_timer(int timer) {
   struct timeval tv;
-#ifndef SOLARIS
   struct timezone tz;
-#endif
   assert(timer <= NR_TIMERS);
 
   if (timers[timer].run == 1)
     return;
 
-#ifdef SOLARIS
-  gettimeofday(&tv);
-#else
   gettimeofday(&tv, &tz);
-#endif
   tv.tv_sec -= systime_offset;
 
   timers[timer].run = 1;
@@ -237,9 +218,7 @@ void start_timer(int timer) {
 
 void restart_timer(int timer) {
   struct timeval tv;
-#ifndef SOLARIS
   struct timezone tz;
-#endif
 
   if (timer > NR_TIMERS)
     return;
@@ -248,11 +227,7 @@ void restart_timer(int timer) {
   timers[timer].stop = 0;
   timers[timer].value = 0;
 
-#ifdef SOLARIS
-  gettimeofday(&tv);
-#else
   gettimeofday(&tv, &tz);
-#endif
   tv.tv_sec -= systime_offset;
 
   timers[timer].run = 1;
@@ -271,9 +246,7 @@ void restart_timer(int timer) {
 
 void stop_timer(int timer) {
   struct timeval tv;
-#ifndef SOLARIS
   struct timezone tz;
-#endif
 
   if (timer > NR_TIMERS)
     return;
@@ -281,11 +254,7 @@ void stop_timer(int timer) {
   if (timers[timer].run == 0)
     return;
 
-#ifdef SOLARIS
-  gettimeofday(&tv);
-#else
   gettimeofday(&tv, &tz);
-#endif
   tv.tv_sec -= systime_offset;
 
   timers[timer].run = 0;
@@ -324,9 +293,7 @@ static word_64 zero = 0;
 
 word_64 get_timer(int timer) {
   struct timeval tv;
-#ifndef SOLARIS
   struct timezone tz;
-#endif
   word_64 stop;
 
   if (timer > NR_TIMERS)
@@ -334,11 +301,7 @@ word_64 get_timer(int timer) {
 
   if (timers[timer].run) {
 
-#ifdef SOLARIS
-    gettimeofday(&tv);
-#else
     gettimeofday(&tv, &tz);
-#endif
     tv.tv_sec -= systime_offset;
 
     if (timer == T1_TIMER) {
@@ -368,9 +331,7 @@ word_64 get_timer(int timer) {
 
 t1_t2_ticks get_t1_t2(void) {
   struct timeval tv;
-#ifndef SOLARIS
   struct timezone tz;
-#endif
   word_64 stop;
   t1_t2_ticks ticks;
   word_64 access_time;
@@ -380,11 +341,7 @@ t1_t2_ticks get_t1_t2(void) {
   word_20 accesstime_loc;
   int i;
 
-#ifdef SOLARIS
-  gettimeofday(&tv);
-#else
   gettimeofday(&tv, &tz);
-#endif
   tv.tv_sec -= systime_offset;
 
   if (timers[T1_TIMER].run) {

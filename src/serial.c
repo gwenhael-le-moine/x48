@@ -73,11 +73,6 @@
 #endif
 #include <termios.h>
 #include <unistd.h>
-#ifdef SOLARIS
-#include <sys/stream.h>
-#include <sys/stropts.h>
-#include <sys/termios.h>
-#endif
 
 #include "device.h"
 #include "hp48.h"

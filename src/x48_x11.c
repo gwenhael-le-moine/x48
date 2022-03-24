@@ -84,9 +84,6 @@
 #ifdef SYSV
 #include <sys/utsname.h>
 #endif
-#ifdef SUNOS
-#include <memory.h>
-#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>

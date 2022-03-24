@@ -65,9 +65,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#ifdef SUNOS
-#include <memory.h>
-#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 

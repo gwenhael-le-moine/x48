@@ -2431,11 +2431,7 @@ int emulate(void) {
            i < sizeof(saturn.keybuf.rows) / sizeof(saturn.keybuf.rows[0]);
            i++) {
         if (saturn.keybuf.rows[i] || throttle) {
-#ifdef SOLARIS
-          gettimeofday(&tv);
-#else
           gettimeofday(&tv, &tz);
-#endif
           while ((tv.tv_sec == tv2.tv_sec) &&
                  ((tv.tv_usec - tv2.tv_usec) < 2)) {
             gettimeofday(&tv, &tz);

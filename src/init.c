@@ -73,9 +73,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifdef SUNOS
-#include <memory.h>
-#endif
 
 #include "device.h"
 #include "hp48.h"
