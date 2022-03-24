@@ -61,16 +61,7 @@ unsigned char *core;
 
 #define DEFAULT_ROM_FILE "rom.dump"
 
-int
-#ifdef __FunctionProto__
-write_mem_file(char *name, unsigned char *mem, int size)
-#else
-write_mem_file(name, mem, size)
-char *name;
-unsigned char *mem;
-int size;
-#endif
-{
+int write_mem_file(char *name, unsigned char *mem, int size) {
   FILE *fp;
   unsigned char *tmp_mem;
   unsigned char byte;
@@ -119,15 +110,7 @@ int size;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-main(int argc, char **argv)
-#else
-main(argc, argv)
-int argc;
-char **argv;
-#endif
-{
+int main(int argc, char **argv) {
   FILE *dump;
   long addr, size;
   int ch, i, gx, error;
@@ -223,4 +206,3 @@ char **argv;
 
   exit (0);
 }
-

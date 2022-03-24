@@ -83,14 +83,7 @@ char **saved_argv;
 
 saturn_t saturn;
 
-void
-#ifdef __FunctionProto__
-signal_handler(int sig)
-#else
-signal_handler(sig)
-int sig;
-#endif
-{
+void signal_handler(int sig) {
   switch (sig) {
     case SIGINT:
       enter_debugger |= USER_INTERRUPT;
@@ -106,15 +99,7 @@ int sig;
   }
 }
 
-void
-#ifdef __FunctionProto__
-save_options(int argc, char **argv)
-#else
-save_options(argc, argv)
-int    argc;
-char **argv;
-#endif
-{
+void save_options(int argc, char **argv) {
   int l;
 
   saved_argc = argc;
@@ -139,15 +124,7 @@ char **argv;
     }
 }
 
-int
-#ifdef __FunctionProto__
-main(int argc, char **argv)
-#else
-main(argc, argv)
-int argc;
-char **argv;
-#endif
-{
+int main(int argc, char **argv) {
   char *name;
   sigset_t set;
   struct sigaction sa;
@@ -182,7 +159,7 @@ char **argv;
    * initialize emulator stuff
    */
   init_emulator();
-  
+
   /*
    *  Create the HP-48 window
    */
@@ -262,4 +239,3 @@ char **argv;
 
   return 0;
 }
-

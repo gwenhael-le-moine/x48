@@ -236,13 +236,7 @@ saturn_0_3_0_t saturn_0_3_0;
 
 #include "config.h"
 
-void
-#ifdef __FunctionProto__
-saturn_config_init(void)
-#else
-saturn_config_init()
-#endif
-{
+void saturn_config_init(void) {
   saturn.version[0] = VERSION_MAJOR;
   saturn.version[1] = VERSION_MINOR;
   saturn.version[2] = PATCHLEVEL;
@@ -257,13 +251,7 @@ saturn_config_init()
   saturn.lbr = 0x0;
 }
 
-void
-#ifdef __FunctionProto__
-init_saturn(void)
-#else
-init_saturn()
-#endif
-{
+void init_saturn(void) {
   int i;
 
   memset(&saturn, 0, sizeof(saturn) - 4 * sizeof(unsigned char *));
@@ -298,15 +286,7 @@ init_saturn()
   dev_memory_init();
 }
 
-void
-#ifdef __FunctionProto__
-copy_old_saturn(old_saturn_t *old, saturn_t *new)
-#else
-copy_old_saturn(old, new)
-old_saturn_t *old;
-saturn_t *new;
-#endif
-{
+void copy_old_saturn(old_saturn_t *old, saturn_t *new) {
   int i;
 
   memcpy(&(new->A[0]), &(old->A[0]), 16);
@@ -452,15 +432,7 @@ saturn_t *new;
     }
 }
 
-void
-#ifdef __FunctionProto__
-copy_0_3_0_saturn(saturn_0_3_0_t *old, saturn_t *new)
-#else
-copy_0_3_0_saturn(old, new)
-saturn_0_3_0_t *old;
-saturn_t *new;
-#endif
-{
+void copy_0_3_0_saturn(saturn_0_3_0_t *old, saturn_t *new) {
   int i;
 
   memcpy(&(new->A[0]), &(old->A[0]), 16);
@@ -609,15 +581,7 @@ saturn_t *new;
     }
 }
 
-int
-#ifdef __FunctionProto__
-read_8(FILE *fp, word_8 *var)
-#else
-read_8(fp, var)
-FILE *fp;
-word_8 *var;
-#endif
-{
+int read_8(FILE *fp, word_8 *var) {
   unsigned char tmp;
 
   if (fread(&tmp, 1, 1, fp) != 1) {
@@ -629,15 +593,7 @@ word_8 *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_char(FILE *fp, char *var)
-#else
-read_char(fp, var)
-FILE *fp;
-char *var;
-#endif
-{
+int read_char(FILE *fp, char *var) {
   char tmp;
 
   if (fread(&tmp, 1, 1, fp) != 1) {
@@ -649,15 +605,7 @@ char *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_16(FILE *fp, word_16 *var)
-#else
-read_16(fp, var)
-FILE *fp;
-word_16 *var;
-#endif
-{
+int read_16(FILE *fp, word_16 *var) {
   unsigned char tmp[2];
 
   if (fread(&tmp[0], 1, 2, fp) != 2) {
@@ -670,15 +618,7 @@ word_16 *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_32(FILE *fp, word_32 *var)
-#else
-read_32(fp, var)
-FILE *fp;
-word_32 *var;
-#endif
-{
+int read_32(FILE *fp, word_32 *var) {
   unsigned char tmp[4];
 
   if (fread(&tmp[0], 1, 4, fp) != 4) {
@@ -693,15 +633,7 @@ word_32 *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_u_long(FILE *fp, unsigned long *var)
-#else
-read_u_long(fp, var)
-FILE *fp;
-unsigned long*var;
-#endif
-{
+int read_u_long(FILE *fp, unsigned long *var) {
   unsigned char tmp[4];
 
   if (fread(&tmp[0], 1, 4, fp) != 4) {
@@ -716,14 +648,7 @@ unsigned long*var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_version_0_3_0_file(FILE *fp)
-#else
-read_version_0_3_0_file(fp)
-FILE *fp;
-#endif
-{
+int read_version_0_3_0_file(FILE *fp) {
   int i;
 
   /*
@@ -833,14 +758,7 @@ FILE *fp;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_version_0_4_0_file(FILE *fp)
-#else
-read_version_0_4_0_file(fp)
-FILE *fp;
-#endif
-{
+int read_version_0_4_0_file(FILE *fp) {
   int i;
 
   /*
@@ -951,16 +869,7 @@ FILE *fp;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_mem_file(char *name, word_4 *mem, int size)
-#else
-read_mem_file(name, mem, size)
-char *name;
-word_4 *mem;
-int size;
-#endif
-{
+int read_mem_file(char *name, word_4 *mem, int size) {
   struct stat st;
   FILE *fp;
   word_8 *tmp_mem;
@@ -1040,7 +949,7 @@ int size;
               mem[j++] = (word_4)((int)tmp_mem[i] & 0xf);
               mem[j++] = (word_4)(((int)tmp_mem[i] >> 4) & 0xf);
             }
-    
+
           free(tmp_mem);
         }
     }
@@ -1053,14 +962,7 @@ int size;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-read_rom(const char *fname)
-#else
-read_rom(fname)
-const char *fname;
-#endif
-{
+int read_rom(const char *fname) {
   int ram_size;
 
   if (!read_rom_file(romFileName, &saturn.rom, &rom_size))
@@ -1073,7 +975,7 @@ const char *fname;
     ram_size = RAM_SIZE_SX;
 
   if (NULL == (saturn.ram = (word_4 *)malloc(ram_size)))
-    { 
+    {
       if (!quiet)
         fprintf(stderr, "%s: can\'t malloc RAM\n", progname);
       return 0;
@@ -1096,14 +998,7 @@ const char *fname;
   return 1;
 }
 
-void
-#ifdef __FunctionProto__
-get_home_directory(char *path)
-#else
-get_home_directory(path)
-char *path;
-#endif
-{
+void get_home_directory(char *path) {
   char          *p;
   struct passwd *pwd;
 
@@ -1140,13 +1035,7 @@ char *path;
     }
 }
 
-int
-#ifdef __FunctionProto__
-read_files(void)
-#else
-read_files()
-#endif
-{
+int read_files(void) {
   char           path[1024];
   char           fnam[1024];
   unsigned long  v1, v2;
@@ -1223,7 +1112,7 @@ read_files()
           read_version = 0;
         }
       }
-      
+
     if (read_version) {
         v1 = ((int)saturn.version[0] & 0xff) << 24;
         v1 |= ((int)saturn.version[1] & 0xff) << 16;
@@ -1233,7 +1122,7 @@ read_files()
         v2 |= ((int)VERSION_MINOR & 0xff) << 16;
         v2 |= ((int)PATCHLEVEL & 0xff) << 8;
         v2 |= ((int)COMPILE_VERSION & 0xff);
-  
+
         if ((v1 & 0xffffff00) < (v2 & 0xffffff00)) {
           if (!quiet)
             fprintf(stderr, "%s: %s is a version %d.%d.%d file, converting\n",
@@ -1245,7 +1134,7 @@ read_files()
                     progname, fnam,
                     saturn.version[0], saturn.version[1], saturn.version[2]);
         }
-    
+
         if (v1 < 0x00040000)
           {
             /*
@@ -1415,15 +1304,7 @@ read_files()
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-write_8(FILE *fp, word_8 *var)
-#else
-write_8(fp, var)
-FILE *fp;
-word_8 *var;
-#endif
-{
+int write_8(FILE *fp, word_8 *var) {
   unsigned char tmp;
 
   tmp = *var;
@@ -1435,15 +1316,7 @@ word_8 *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-write_char(FILE *fp, char *var)
-#else
-write_char(fp, var)
-FILE *fp;
-char *var;
-#endif
-{
+int write_char(FILE *fp, char *var) {
   char tmp;
 
   tmp = *var;
@@ -1455,15 +1328,7 @@ char *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-write_16(FILE *fp, word_16 *var)
-#else
-write_16(fp, var)
-FILE *fp;
-word_16 *var;
-#endif
-{
+int write_16(FILE *fp, word_16 *var) {
   unsigned char tmp[2];
 
   tmp[0] = (*var >> 8) & 0xff;
@@ -1476,15 +1341,7 @@ word_16 *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-write_32(FILE *fp, word_32 *var)
-#else
-write_32(fp, var)
-FILE *fp;
-word_32 *var;
-#endif
-{
+int write_32(FILE *fp, word_32 *var) {
   unsigned char tmp[4];
 
   tmp[0] = (*var >> 24) & 0xff;
@@ -1499,15 +1356,7 @@ word_32 *var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-write_u_long(FILE *fp, unsigned long *var)
-#else
-write_u_long(fp, var)
-FILE *fp;
-unsigned long*var;
-#endif
-{
+int write_u_long(FILE *fp, unsigned long *var) {
   unsigned char tmp[4];
 
   tmp[0] = (*var >> 24) & 0xff;
@@ -1522,16 +1371,7 @@ unsigned long*var;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-write_mem_file(char *name, word_4 *mem, int size)
-#else
-write_mem_file(name, mem, size)
-char *name;
-word_4 *mem;
-int size;
-#endif
-{
+int write_mem_file(char *name, word_4 *mem, int size) {
   FILE *fp;
   word_8 *tmp_mem;
   word_8 byte;
@@ -1588,13 +1428,7 @@ int size;
 }
 
 
-int
-#ifdef __FunctionProto__
-write_files(void)
-#else
-write_files()
-#endif
-{
+int write_files(void) {
   char path[1024];
   char fnam[1024];
   struct stat st;
@@ -1771,13 +1605,7 @@ write_files()
   return 1;
 }
 
-int 
-#ifdef __FunctionProto__
-init_emulator(void)
-#else
-init_emulator()
-#endif
-{
+int  init_emulator(void) {
   if (!initialize)
     if (read_files())
       {
@@ -1789,30 +1617,17 @@ init_emulator()
   init_saturn();
   if (!read_rom(romFileName))
     exit(1);
-  
+
   return 0;
 }
 
-void
-#ifdef __FunctionProto__
-init_active_stuff(void)
-#else
-init_active_stuff()
-#endif
-{
+void init_active_stuff(void) {
   serial_init();
   init_annunc();
   init_display();
 }
 
-int
-#ifdef __FunctionProto__
-exit_emulator(void)
-#else
-exit_emulator()
-#endif
-{
+int exit_emulator(void) {
   write_files();
   return 1;
 }
-

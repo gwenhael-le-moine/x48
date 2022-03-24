@@ -82,7 +82,7 @@ static int last_annunc_state = -1;
 
 display_t display;
 
-#define DISP_ROWS	       64
+#define DISP_ROWS          64
 
 #define NIBS_PER_BUFFER_ROW    (NIBBLES_PER_ROW + 2)
 
@@ -113,13 +113,7 @@ unsigned char nibbles[16][2] =
 
 static unsigned char nibble_bits[16];
 
-void
-#ifdef __FunctionProto__
-init_nibble_maps(void)
-#else
-init_nibble_maps()
-#endif
-{
+void init_nibble_maps(void) {
   int i;
 
   for (i = 0; i < 16; i++) {
@@ -167,13 +161,7 @@ init_nibble_maps()
 #endif
 }
 
-void
-#ifdef __FunctionProto__
-init_display(void)
-#else
-init_display()
-#endif
-{
+void init_display(void) {
   display.on = (int)(saturn.disp_io & 0x8) >> 3;
 
   display.disp_start = (saturn.disp_addr & 0xffffe);
@@ -193,7 +181,7 @@ init_display()
     display.nibs_per_line = (NIBBLES_PER_ROW+saturn.line_offset) & 0xfff;
 
   display.disp_end = display.disp_start +
-	             (display.nibs_per_line * (display.lines + 1));
+                 (display.nibs_per_line * (display.lines + 1));
 
   display.menu_start = saturn.menu_addr;
   display.menu_end = saturn.menu_addr + 0x110;
@@ -209,16 +197,7 @@ init_display()
   init_nibble_maps();
 }
 
-static inline void
-#ifdef __FunctionProto__
-draw_nibble(int c, int r, int val)
-#else
-draw_nibble(c, r, val)
-int c;
-int r;
-int val;
-#endif
-{
+static inline void draw_nibble(int c, int r, int val) {
   int x, y;
 
   x = (c * 8) + 5;
@@ -232,15 +211,7 @@ int val;
   }
 }
 
-static inline void
-#ifdef __FunctionProto__
-draw_row(long addr, int row)
-#else
-draw_row(addr, row)
-long addr;
-int row;
-#endif
-{
+static inline void draw_row(long addr, int row) {
   int i, v;
   int line_length;
 
@@ -256,13 +227,7 @@ int row;
   }
 }
 
-void
-#ifdef __FunctionProto__
-update_display(void)
-#else
-update_display()
-#endif
-{
+void update_display(void) {
   int i, j;
   long addr;
   static int old_offset = -1;
@@ -370,28 +335,14 @@ update_display()
   }
 }
 
-void
-#ifdef __FunctionProto__
-redraw_display(void)
-#else
-redraw_display()
-#endif
-{
+void redraw_display(void) {
   XClearWindow(dpy, disp.win);
   memset(disp_buf, 0, sizeof(disp_buf));
   memset(lcd_buffer, 0, sizeof(lcd_buffer));
   update_display();
 }
 
-void
-#ifdef __FunctionProto__
-disp_draw_nibble(word_20 addr, word_4 val)
-#else
-disp_draw_nibble(addr, val)
-word_20 addr;
-word_4 val;
-#endif
-{
+void disp_draw_nibble(word_20 addr, word_4 val) {
   long offset;
 #ifdef HAVE_XSHM
   int shm_addr;
@@ -448,15 +399,7 @@ word_4 val;
   }
 }
 
-void
-#ifdef __FunctionProto__
-menu_draw_nibble(word_20 addr, word_4 val)
-#else
-menu_draw_nibble(addr, val)
-word_20 addr;
-word_4 val;
-#endif
-{
+void menu_draw_nibble(word_20 addr, word_4 val) {
   long offset;
 #ifdef HAVE_XSHM
   int shm_addr;
@@ -505,13 +448,7 @@ struct ann_struct {
   { 0 }
 };
 
-void
-#ifdef __FunctionProto__
-draw_annunc(void)
-#else
-draw_annunc()
-#endif
-{
+void draw_annunc(void) {
   int val;
   int i;
 
@@ -537,31 +474,18 @@ draw_annunc()
   refresh_icon();
 }
 
-void
-#ifdef __FunctionProto__
-redraw_annunc(void)
-#else
-redraw_annunc()
-#endif
-{
+void redraw_annunc(void) {
   last_annunc_state = -1;
   draw_annunc();
 }
 
-void
-#ifdef __FunctionProto__
-init_annunc(void)
-#else
-init_annunc()
-#endif
-{
+void init_annunc(void) {
   int i;
- 
+
   for (i = 0; ann_tbl[i].bit; i++) {
     ann_tbl[i].pixmap = XCreateBitmapFromData(dpy, disp.win,
                                               (char *)ann_tbl[i].bits,
-                                	      ann_tbl[i].width,
+                                          ann_tbl[i].width,
                                               ann_tbl[i].height);
   }
 }
-

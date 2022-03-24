@@ -37,16 +37,7 @@
 unsigned int opt_gx = 0;
 unsigned int rom_size = 0;
 
-int
-#ifdef __FunctionProto__
-read_rom_file(char *name, unsigned char **mem, int *size)
-#else
-read_rom_file(name, mem, size)
-char *name;
-unsigned char **mem;
-int *size;
-#endif
-{
+int read_rom_file(char *name, unsigned char **mem, int *size) {
   struct stat st;
   FILE *fp;
   unsigned char *tmp_mem;
@@ -180,7 +171,7 @@ int *size;
               (*mem)[j++] = tmp_mem[i] & 0xf;
               (*mem)[j++] = (tmp_mem[i] >> 4) & 0xf;
             }
-    
+
           free(tmp_mem);
         }
     }
@@ -197,20 +188,20 @@ int *size;
       if (*size == 4 * ROM_SIZE_GX)
         {
           fprintf(stderr, "%s seems to be HP49 ROM, but size is 0x%x\n",
-		  name, *size);
+          name, *size);
           opt_gx = 2;
         }
       else
       if (*size == 8 * ROM_SIZE_GX)
         {
           fprintf(stderr, "%s seems to be HP49 ROM, but size is 0x%x\n",
-		  name, *size);
+          name, *size);
           opt_gx = 2;
         }
       else
         {
           fprintf(stderr, "%s seems to be G/GX ROM, but size is 0x%x\n",
-		  name, *size);
+          name, *size);
           free(*mem);
           *mem = NULL;
           *size = 0;
@@ -226,7 +217,7 @@ int *size;
       else
         {
           fprintf(stderr, "%s seems to be S/SX ROM, but size is 0x%x\n",
-		  name, *size);
+          name, *size);
           free(*mem);
           *mem = NULL;
           *size = 0;
@@ -239,4 +230,3 @@ int *size;
 
   return 1;
 }
-

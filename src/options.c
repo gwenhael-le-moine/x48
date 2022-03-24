@@ -50,13 +50,7 @@
 #include "constants.h"
 #include "resources.h"
 
-void
-#ifdef __FunctionProto__
-usage(void)
-#else
-usage()
-#endif
-{
+void usage(void) {
   fprintf(stdout, "\n\
 x48 Version %d.%d.%d, Copyright (c) 1994-2005 by Eddie C. Dost <ecd@dressler.de>.\n\
 \n\
@@ -102,27 +96,15 @@ where options include:\n\
   exit (1);
 }
 
-void
-#ifdef __FunctionProto__
-show_version(void)
-#else
-show_version()
-#endif
-{
+void show_version(void) {
   fprintf(stdout, "\n\
 %s Version %d.%d.%d, x48 is Copyright (c) 1994-2005 by Eddie C. Dost <ecd@dressler.de>.\n\
 Compiled on %s by <%s> #%d\n\n",
-	 progname, VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
+     progname, VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
          COMPILE_TIME, COMPILE_BY, COMPILE_VERSION);
 }
 
-void
-#ifdef __FunctionProto__
-show_copyright(void)
-#else
-show_copyright()
-#endif
-{
+void show_copyright(void) {
   fprintf(stdout, "\n\
                                COPYRIGHT\n\
 \n\
@@ -144,13 +126,7 @@ along with this program; if not, write to the Free Software\n\
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n");
 }
 
-void
-#ifdef __FunctionProto__
-show_warranty(void)
-#else
-show_warranty()
-#endif
-{
+void show_warranty(void) {
   fprintf(stdout, "\n\
                               NO WARRANTY\n\
 \n\
@@ -174,5 +150,3 @@ YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER\n\
 PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\n\
 POSSIBILITY OF SUCH DAMAGES.\n\n");
 }
-
-

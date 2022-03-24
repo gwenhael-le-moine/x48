@@ -53,15 +53,7 @@ char *progname;
 
 #define calc_crc(n) (crc = ((crc >> 4) ^ (((crc ^ n) & 0xf) * 0x1081)))
 
-int
-#ifdef __FunctionProto__
-main(int argc, char **argv)
-#else
-main(argc, argv)
-int argc;
-char **argv;
-#endif
-{
+int main(int argc, char **argv) {
   unsigned char version[7];
   long ver_addr;
   int i, a, c, d, d0, d1, D0, D1;
@@ -141,4 +133,3 @@ char **argv;
 
   return 0;
 }
-

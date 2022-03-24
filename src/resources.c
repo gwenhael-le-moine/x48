@@ -75,13 +75,7 @@ int     resetOnStartup;
 char   *romFileName;
 char   *homeDirectory;
 
-void
-#ifdef __FunctionProto__
-get_resources(void)
-#else
-get_resources()
-#endif
-{
+void get_resources(void) {
   if (get_boolean_resource("printVersion", "PrintVersion"))
     show_version();
   if (get_boolean_resource("printCopyright", "PrintCopyright"))
@@ -114,16 +108,7 @@ get_resources()
   throttle = get_boolean_resource("throttle", "Throttle");
 }
 
-char *
-#ifdef __FunctionProto__
-get_string_resource_from_db (XrmDatabase db, char *name, char *class)
-#else
-get_string_resource_from_db (db, name, class)
-XrmDatabase  db;
-char        *name;
-char        *class;
-#endif
-{
+char * get_string_resource_from_db (XrmDatabase db, char *name, char *class) {
   XrmValue value;
   char	*type;
   char full_name [1024], full_class [1024];
@@ -144,27 +129,11 @@ char        *class;
   return (char *)0;
 }
 
-char *
-#ifdef __FunctionProto__
-get_string_resource (char *name, char *class)
-#else
-get_string_resource (name, class)
-char *name;
-char *class;
-#endif
-{
+char * get_string_resource (char *name, char *class) {
   return get_string_resource_from_db(rdb, name, class);
 }
 
-int
-#ifdef __FunctionProto__
-get_mnemonic_resource (char *name, char *class)
-#else
-get_mnemonic_resource (name, class)
-char *name;
-char *class;
-#endif
-{
+int get_mnemonic_resource (char *name, char *class) {
   char *tmp, buf [100];
   char *s = get_string_resource (name, class);
   char *os = s;
@@ -180,19 +149,11 @@ char *class;
   if (!strcmp (buf, "class"))
     return CLASS_MNEMONICS;
   fprintf (stderr, "%s: %s must be one of \'HP\' or \'class\', not %s.\n",
-	   progname, name, buf);
+       progname, name, buf);
   return CLASS_MNEMONICS;
 }
 
-int
-#ifdef __FunctionProto__
-get_boolean_resource (char *name, char *class)
-#else
-get_boolean_resource (name, class)
-char *name;
-char *class;
-#endif
-{
+int get_boolean_resource (char *name, char *class) {
   char *tmp, buf [100];
   char *s = get_string_resource (name, class);
   char *os = s;
@@ -207,19 +168,11 @@ char *class;
   if (!strcmp (buf, "off") || !strcmp (buf, "false") || !strcmp (buf, "no"))
     return 0;
   fprintf (stderr, "%s: %s must be boolean, not %s.\n",
-	   progname, name, buf);
+       progname, name, buf);
   return 0;
 }
 
-int
-#ifdef __FunctionProto__
-get_integer_resource (char *name, char *class)
-#else
-get_integer_resource (name, class)
-char *name;
-char *class;
-#endif
-{
+int get_integer_resource (char *name, char *class) {
   int val;
   char c, *s = get_string_resource (name, class);
   if (!s) return 0;
@@ -229,23 +182,13 @@ char *class;
       return val;
     }
   fprintf (stderr, "%s: %s must be an integer, not %s.\n",
-	   progname, name, s);
+       progname, name, s);
   free (s);
   return 0;
 }
 
-unsigned int
-#ifdef __FunctionProto__
-get_pixel_resource (char *name, char *class, Display *dpy,
-                    Colormap cmap)
-#else
-get_pixel_resource (name, class, dpy, cmap)
-char *name;
-char *class;
-Display *dpy;
-Colormap cmap;
-#endif
-{
+unsigned int get_pixel_resource (char *name, char *class, Display *dpy,
+                    Colormap cmap) {
   XColor color;
   char *s = get_string_resource (name, class);
   if (!s) goto DEFAULT;
@@ -265,20 +208,11 @@ Colormap cmap;
  DEFAULT:
   if (s) free (s);
   return (strcmp (class, "Background")
-	  ? WhitePixel (dpy, DefaultScreen (dpy))
-	  : BlackPixel (dpy, DefaultScreen (dpy)));
+      ? WhitePixel (dpy, DefaultScreen (dpy))
+      : BlackPixel (dpy, DefaultScreen (dpy)));
 }
 
-static Visual *
-#ifdef __FunctionProto__
-pick_visual_of_class (Display *dpy, int visual_class, unsigned int *depth)
-#else
-pick_visual_of_class (dpy, visual_class, depth)
-Display *dpy;
-int visual_class;
-unsigned int *depth;
-#endif
-{
+static Visual * pick_visual_of_class (Display *dpy, int visual_class, unsigned int *depth) {
   XVisualInfo vi_in, *vi_out;
   int out_count;
 
@@ -305,16 +239,7 @@ unsigned int *depth;
     }
 }
 
-static Visual *
-#ifdef __FunctionProto__
-id_to_visual (Display *dpy, int id, unsigned int *depth)
-#else
-id_to_visual (dpy, id, depth)
-Display *dpy;
-int id;
-unsigned int *depth;
-#endif
-{
+static Visual * id_to_visual (Display *dpy, int id, unsigned int *depth) {
   XVisualInfo vi_in, *vi_out;
   int out_count;
 
@@ -332,17 +257,7 @@ unsigned int *depth;
   return 0;
 }
 
-Visual *
-#ifdef __FunctionProto__
-get_visual_resource(Display *dpy, char *name, char *class, unsigned int *depth)
-#else
-get_visual_resource(dpy, name, class, depth)
-Display *dpy;
-char *name;
-char *class;
-unsigned int *depth;
-#endif
-{
+Visual * get_visual_resource(Display *dpy, char *name, char *class, unsigned int *depth) {
   char  c;
   char *tmp, *s;
   int   vclass;
@@ -386,16 +301,7 @@ unsigned int *depth;
     return pick_visual_of_class(dpy, vclass, depth);
 }
 
-XFontStruct *
-#ifdef __FunctionProto__
-get_font_resource(Display *dpy, char *name, char *class)
-#else
-get_font_resource(dpy, name, class)
-Display *dpy;
-char *name;
-char *class;
-#endif
-{
+XFontStruct * get_font_resource(Display *dpy, char *name, char *class) {
   char *s;
   XFontStruct *f = (XFontStruct *)0;
 
@@ -416,4 +322,3 @@ char *class;
     }
   return f;
 }
-

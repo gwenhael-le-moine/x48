@@ -115,13 +115,7 @@ word_64 time_offset = 0x0;
  * 8. Prevent AutoOff by setting TIMEOUT
  *
  */
-void
-#ifdef __FunctionProto__
-set_accesstime(void)
-#else
-set_accesstime()
-#endif
-{
+void set_accesstime(void) {
   struct timeval  tv;
 #ifndef SOLARIS
   struct timezone tz;
@@ -216,14 +210,7 @@ set_accesstime()
   saturn.ram[timeoutclk_loc] = 0xf;
 }
 
-void
-#ifdef __FunctionProto__
-start_timer(int timer)
-#else
-start_timer(timer)
-int timer;
-#endif
-{
+void start_timer(int timer) {
   struct timeval  tv;
 #ifndef SOLARIS
   struct timezone tz;
@@ -254,14 +241,7 @@ int timer;
 #endif
 }
 
-void
-#ifdef __FunctionProto__
-restart_timer(int timer)
-#else
-restart_timer(timer)
-int timer;
-#endif
-{
+void restart_timer(int timer) {
   struct timeval  tv;
 #ifndef SOLARIS
   struct timezone tz;
@@ -296,14 +276,7 @@ int timer;
 #endif
 }
 
-void
-#ifdef __FunctionProto__
-stop_timer(int timer)
-#else
-stop_timer(timer)
-int timer;
-#endif
-{
+void stop_timer(int timer) {
   struct timeval  tv;
 #ifndef SOLARIS
   struct timezone tz;
@@ -341,14 +314,7 @@ int timer;
 #endif
 }
 
-void
-#ifdef __FunctionProto__
-reset_timer(int timer)
-#else
-reset_timer(timer)
-int timer;
-#endif
-{
+void reset_timer(int timer) {
   if (timer > NR_TIMERS)
     return;
   timers[timer].run = 0;
@@ -362,14 +328,7 @@ int timer;
 
 static word_64 zero = 0;
 
-word_64
-#ifdef __FunctionProto__
-get_timer(int timer)
-#else
-get_timer(timer)
-int timer;
-#endif
-{
+word_64 get_timer(int timer) {
   struct timeval  tv;
 #ifndef SOLARIS
   struct timezone tz;
@@ -413,13 +372,7 @@ int timer;
  *
  */
 
-t1_t2_ticks
-#ifdef __FunctionProto__
-get_t1_t2(void)
-#else
-get_t1_t2()
-#endif
-{
+t1_t2_ticks get_t1_t2(void) {
   struct timeval  tv;
 #ifndef SOLARIS
   struct timezone tz;
@@ -444,19 +397,19 @@ get_t1_t2()
     {
       stop = (tv.tv_sec << 9);
       stop += (tv.tv_usec / 15625) >> 3;
-      if (timers[T1_TIMER].start <=  stop) 
+      if (timers[T1_TIMER].start <=  stop)
         {
           timers[T1_TIMER].value += stop - timers[T1_TIMER].start;
         } else {
-	  fprintf(stderr, "clock running backwards\n");
-	}
+      fprintf(stderr, "clock running backwards\n");
+    }
     }
   ticks.t1_ticks = timers[T1_TIMER].value;
 
   stop = tv.tv_sec;
   stop <<= 13;
   stop += (tv.tv_usec << 7) / 15625;
-  
+
   stop += time_offset;
 
   accesstime_loc = opt_gx ? ACCESSTIME_GX : ACCESSTIME_SX;
@@ -510,7 +463,7 @@ get_t1_t2()
       set_0_time += adj_time;
       time_offset += adj_time;
       access_time -= adj_time;
-  
+
 #ifdef DEBUG_TIMER_ADJUST
       fprintf(stderr, "Time adjusted by ");
       fprintf(stderr, "%lX", adj_time);
@@ -540,4 +493,3 @@ get_t1_t2()
 
   return ticks;
 }
-

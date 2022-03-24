@@ -114,13 +114,7 @@ static word_20 jumpmasks[] = {
   0xffff0000, 0xfff00000, 0xff000000, 0xf0000000
 };
 
-int
-#ifdef __FunctionProto__
-decode_group_80(void)
-#else
-decode_group_80()
-#endif
-{
+int decode_group_80(void) {
   int t, op3, op4, op5, op6;
   unsigned char *REG;
   long addr;
@@ -171,46 +165,46 @@ decode_group_80()
         case 0:		/* INTON */
           saturn.PC += 4;
           do_inton();
-	  return 0;
+      return 0;
         case 1:		/* RSI... */
           op5 = read_nibble(saturn.PC + 4);
           saturn.PC += 5;
           do_reset_interrupt_system();
-	  return 0;
+      return 0;
         case 2:		/* LA... */
           op5 = read_nibble(saturn.PC + 4);
           load_constant(saturn.A, op5 + 1, saturn.PC + 5);
           saturn.PC += 6 + op5;
-	  return 0;
+      return 0;
         case 3:		/* BUSCB */
           saturn.PC += 4;
-	  return 0;
+      return 0;
         case 4:		/* ABIT=0 */
           op5 = read_nibble(saturn.PC + 4);
           saturn.PC += 5;
           clear_register_bit(saturn.A, op5);
-	  return 0;
+      return 0;
         case 5:		/* ABIT=1 */
           op5 = read_nibble(saturn.PC + 4);
           saturn.PC += 5;
           set_register_bit(saturn.A, op5);
-	  return 0;
+      return 0;
         case 8:		/* CBIT=0 */
           op5 = read_nibble(saturn.PC + 4);
           saturn.PC += 5;
           clear_register_bit(saturn.C, op5);
-	  return 0;
+      return 0;
         case 9:		/* CBIT=1 */
           op5 = read_nibble(saturn.PC + 4);
           saturn.PC += 5;
           set_register_bit(saturn.C, op5);
-	  return 0;
+      return 0;
         case 6:		/* ?ABIT=0 */
         case 7:		/* ?ABIT=1 */
         case 0xa:	/* ?CBIT=0 */
         case 0xb:	/* ?CBIT=1 */
           op5 = read_nibble(saturn.PC + 4);
-	  if (op4 < 8)
+      if (op4 < 8)
             REG = saturn.A;
           else
             REG = saturn.C;
@@ -219,20 +213,20 @@ decode_group_80()
           else
             t = 1;
           saturn.CARRY = (get_register_bit(REG, op5) == t)?1:0;
-	  if (saturn.CARRY) {
-	    saturn.PC += 5;
+      if (saturn.CARRY) {
+        saturn.PC += 5;
             op6 = read_nibbles(saturn.PC, 2);
-      	    if (op6) {
+            if (op6) {
               if (op6 & 0x80)
                 op6 |= jumpmasks[2];
               jumpaddr = (saturn.PC + op6) & 0xfffff;
-	      saturn.PC = jumpaddr;
+          saturn.PC = jumpaddr;
             } else {
-	      saturn.PC = pop_return_addr();
+          saturn.PC = pop_return_addr();
             }
-	  } else {
+      } else {
             saturn.PC += 7;
-	  }
+      }
           return 0;
         case 0xc:	/* PC=(A) */
           addr = dat_to_addr(saturn.A);
@@ -241,7 +235,7 @@ decode_group_80()
           return 0;
         case 0xd:	/* BUSCD */
           saturn.PC += 4;
-	  return 0;
+      return 0;
         case 0xe:	/* PC=(C) */
           addr = dat_to_addr(saturn.C);
           jumpaddr = read_nibbles(addr, 5);
@@ -250,7 +244,7 @@ decode_group_80()
         case 0xf:	/* INTOFF */
           saturn.PC += 4;
           do_intoff();
-	  return 0;
+      return 0;
         default:
           return 1;
       }
@@ -292,13 +286,7 @@ decode_group_80()
   }
 }
 
-int
-#ifdef __FunctionProto__
-decode_group_1(void)
-#else
-decode_group_1()
-#endif
-{
+int decode_group_1(void) {
   int op, op2, op3, op4;
 
   op2 = read_nibble(saturn.PC + 1);
@@ -464,67 +452,67 @@ decode_group_1()
       switch (op3) {
         case 0:		/* D0=A */
           saturn.PC += 3;
-	  register_to_address(saturn.A, &saturn.D0, 0);
+      register_to_address(saturn.A, &saturn.D0, 0);
           return 0;
         case 1:		/* D1=A */
           saturn.PC += 3;
-	  register_to_address(saturn.A, &saturn.D1, 0);
+      register_to_address(saturn.A, &saturn.D1, 0);
           return 0;
         case 2:		/* AD0EX */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.A, &saturn.D0, A_FIELD);
-	  return 0;
+      saturn.PC += 3;
+      exchange_reg(saturn.A, &saturn.D0, A_FIELD);
+      return 0;
         case 3:		/* AD1EX */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.A, &saturn.D1, A_FIELD);
-	  return 0;
+      saturn.PC += 3;
+      exchange_reg(saturn.A, &saturn.D1, A_FIELD);
+      return 0;
         case 4:		/* D0=C */
           saturn.PC += 3;
-	  register_to_address(saturn.C, &saturn.D0, 0);
+      register_to_address(saturn.C, &saturn.D0, 0);
           return 0;
         case 5:		/* D1=C */
           saturn.PC += 3;
-	  register_to_address(saturn.C, &saturn.D1, 0);
+      register_to_address(saturn.C, &saturn.D1, 0);
           return 0;
         case 6:		/* CD0EX */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.C, &saturn.D0, A_FIELD);
-	  return 0;
+      saturn.PC += 3;
+      exchange_reg(saturn.C, &saturn.D0, A_FIELD);
+      return 0;
         case 7:		/* CD1EX */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.C, &saturn.D1, A_FIELD);
-	  return 0;
+      saturn.PC += 3;
+      exchange_reg(saturn.C, &saturn.D1, A_FIELD);
+      return 0;
         case 8:		/* D0=AS */
           saturn.PC += 3;
-	  register_to_address(saturn.A, &saturn.D0, 1);
+      register_to_address(saturn.A, &saturn.D0, 1);
           return 0;
         case 9:		/* saturn.D1=AS */
           saturn.PC += 3;
-	  register_to_address(saturn.A, &saturn.D1, 1);
+      register_to_address(saturn.A, &saturn.D1, 1);
           return 0;
         case 0xa:	/* AD0XS */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.A, &saturn.D0, IN_FIELD);
+      saturn.PC += 3;
+      exchange_reg(saturn.A, &saturn.D0, IN_FIELD);
           return 0;
         case 0xb:	/* AD1XS */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.A, &saturn.D1, IN_FIELD);
+      saturn.PC += 3;
+      exchange_reg(saturn.A, &saturn.D1, IN_FIELD);
           return 0;
         case 0xc:	/* D0=CS */
           saturn.PC += 3;
-	  register_to_address(saturn.C, &saturn.D0, 1);
+      register_to_address(saturn.C, &saturn.D0, 1);
           return 0;
         case 0xd:	/* D1=CS */
           saturn.PC += 3;
-	  register_to_address(saturn.C, &saturn.D1, 1);
+      register_to_address(saturn.C, &saturn.D1, 1);
           return 0;
         case 0xe:	/* CD0XS */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.C, &saturn.D0, IN_FIELD);
+      saturn.PC += 3;
+      exchange_reg(saturn.C, &saturn.D0, IN_FIELD);
           return 0;
         case 0xf:	/* CD1XS */
-	  saturn.PC += 3;
-	  exchange_reg(saturn.C, &saturn.D1, IN_FIELD);
+      saturn.PC += 3;
+      exchange_reg(saturn.C, &saturn.D1, IN_FIELD);
           return 0;
         default:
           return 1;
@@ -534,116 +522,116 @@ decode_group_1()
       op = op3 < 8 ? 0xf : 6;
       switch(op3 & 7) {
         case 0:	/* DAT0=A */
-	  saturn.PC += 3;
-	  store(saturn.D0, saturn.A, op);
+      saturn.PC += 3;
+      store(saturn.D0, saturn.A, op);
           return 0;
-	case 1:	/* DAT1=A */
-	  saturn.PC += 3;
-	  store(saturn.D1, saturn.A, op);
+    case 1:	/* DAT1=A */
+      saturn.PC += 3;
+      store(saturn.D1, saturn.A, op);
           return 0;
-	case 2:	/* A=DAT0 */
-	  saturn.PC += 3;
-	  recall(saturn.A, saturn.D0, op);
+    case 2:	/* A=DAT0 */
+      saturn.PC += 3;
+      recall(saturn.A, saturn.D0, op);
           return 0;
-	case 3:	/* A=DAT1 */
-	  saturn.PC += 3;
-	  recall(saturn.A, saturn.D1, op);
+    case 3:	/* A=DAT1 */
+      saturn.PC += 3;
+      recall(saturn.A, saturn.D1, op);
           return 0;
-	case 4:	/* DAT0=C */
-	  saturn.PC += 3;
-	  store(saturn.D0, saturn.C, op);
+    case 4:	/* DAT0=C */
+      saturn.PC += 3;
+      store(saturn.D0, saturn.C, op);
           return 0;
-	case 5:	/* DAT1=C */
-	  saturn.PC += 3;
-	  store(saturn.D1, saturn.C, op);
+    case 5:	/* DAT1=C */
+      saturn.PC += 3;
+      store(saturn.D1, saturn.C, op);
           return 0;
-	case 6:	/* C=DAT0 */
-	  saturn.PC += 3;
-	  recall(saturn.C, saturn.D0, op);
+    case 6:	/* C=DAT0 */
+      saturn.PC += 3;
+      recall(saturn.C, saturn.D0, op);
           return 0;
-	case 7:	/* C=DAT1 */
-	  saturn.PC += 3;
-	  recall(saturn.C, saturn.D1, op);
+    case 7:	/* C=DAT1 */
+      saturn.PC += 3;
+      recall(saturn.C, saturn.D1, op);
           return 0;
-	default:
-	  return 1;
+    default:
+      return 1;
       }
     case 5:
       op3 = read_nibble(saturn.PC + 2);
       op4 = read_nibble(saturn.PC + 3);
       if (op3 >= 8) {
-	switch(op3 & 7) {
+    switch(op3 & 7) {
           case 0:	/* DAT0=A */
-	    saturn.PC += 4;
-	    store_n(saturn.D0, saturn.A, op4+1);
+        saturn.PC += 4;
+        store_n(saturn.D0, saturn.A, op4+1);
             return 0;
-	  case 1:	/* DAT1=A */
-	    saturn.PC += 4;
-	    store_n(saturn.D1, saturn.A, op4+1);
+      case 1:	/* DAT1=A */
+        saturn.PC += 4;
+        store_n(saturn.D1, saturn.A, op4+1);
             return 0;
-	  case 2:	/* A=DAT0 */
-	    saturn.PC += 4;
-	    recall_n(saturn.A, saturn.D0, op4+1);
+      case 2:	/* A=DAT0 */
+        saturn.PC += 4;
+        recall_n(saturn.A, saturn.D0, op4+1);
             return 0;
-	  case 3:	/* A=DAT1 */
-	    saturn.PC += 4;
-	    recall_n(saturn.A, saturn.D1, op4+1);
+      case 3:	/* A=DAT1 */
+        saturn.PC += 4;
+        recall_n(saturn.A, saturn.D1, op4+1);
             return 0;
-	  case 4:	/* DAT0=C */
-	    saturn.PC += 4;
-	    store_n(saturn.D0, saturn.C, op4+1);
+      case 4:	/* DAT0=C */
+        saturn.PC += 4;
+        store_n(saturn.D0, saturn.C, op4+1);
             return 0;
-	  case 5:	/* DAT1=C */
-	    saturn.PC += 4;
-	    store_n(saturn.D1, saturn.C, op4+1);
+      case 5:	/* DAT1=C */
+        saturn.PC += 4;
+        store_n(saturn.D1, saturn.C, op4+1);
             return 0;
-	  case 6:	/* C=DAT0 */
-	    saturn.PC += 4;
-	    recall_n(saturn.C, saturn.D0, op4+1);
+      case 6:	/* C=DAT0 */
+        saturn.PC += 4;
+        recall_n(saturn.C, saturn.D0, op4+1);
             return 0;
-	  case 7:	/* C=DAT1 */
-	    saturn.PC += 4;
-	    recall_n(saturn.C, saturn.D1, op4+1);
+      case 7:	/* C=DAT1 */
+        saturn.PC += 4;
+        recall_n(saturn.C, saturn.D1, op4+1);
             return 0;
-	  default:
-	    return 1;
+      default:
+        return 1;
         }
       } else {
-	switch(op3) {
+    switch(op3) {
           case 0:	/* DAT0=A */
-	    saturn.PC += 4;
-	    store(saturn.D0, saturn.A, op4);
+        saturn.PC += 4;
+        store(saturn.D0, saturn.A, op4);
             return 0;
-	  case 1:	/* DAT1=A */
-	    saturn.PC += 4;
-	    store(saturn.D1, saturn.A, op4);
+      case 1:	/* DAT1=A */
+        saturn.PC += 4;
+        store(saturn.D1, saturn.A, op4);
             return 0;
-	  case 2:	/* A=DAT0 */
-	    saturn.PC += 4;
-	    recall(saturn.A, saturn.D0, op4);
+      case 2:	/* A=DAT0 */
+        saturn.PC += 4;
+        recall(saturn.A, saturn.D0, op4);
             return 0;
-	  case 3:	/* A=DAT1 */
-	    saturn.PC += 4;
-	    recall(saturn.A, saturn.D1, op4);
+      case 3:	/* A=DAT1 */
+        saturn.PC += 4;
+        recall(saturn.A, saturn.D1, op4);
             return 0;
-	  case 4:	/* DAT0=C */
-	    saturn.PC += 4;
-	    store(saturn.D0, saturn.C, op4);
+      case 4:	/* DAT0=C */
+        saturn.PC += 4;
+        store(saturn.D0, saturn.C, op4);
             return 0;
-	  case 5:	/* DAT1=C */
-	    saturn.PC += 4;
-	    store(saturn.D1, saturn.C, op4);
+      case 5:	/* DAT1=C */
+        saturn.PC += 4;
+        store(saturn.D1, saturn.C, op4);
             return 0;
-	  case 6:	/* C=DAT0 */
-	    saturn.PC += 4;
-	    recall(saturn.C, saturn.D0, op4);
+      case 6:	/* C=DAT0 */
+        saturn.PC += 4;
+        recall(saturn.C, saturn.D0, op4);
             return 0;
-	  case 7:	/* C=DAT1 */
-	    saturn.PC += 4;
-	    recall(saturn.C, saturn.D1, op4);
+      case 7:	/* C=DAT1 */
+        saturn.PC += 4;
+        recall(saturn.C, saturn.D1, op4);
             return 0;
-	  default:
-	    return 1;
+      default:
+        return 1;
         }
       }
     case 6:
@@ -695,14 +683,7 @@ decode_group_1()
   }
 }
 
-static inline int
-#ifdef __FunctionProto__
-decode_8_thru_f(int op1)
-#else
-decode_8_thru_f(op1)
-int op1;
-#endif
-{
+static inline int decode_8_thru_f(int op1) {
   int op2, op3, op4, op5, op6;
 
   op2 = read_nibble(saturn.PC + 1);
@@ -997,13 +978,13 @@ int op1;
                   addr_to_dat(saturn.PC, saturn.C);
                   return 0;
                 case 6:		/* APCEX */
-		  saturn.PC += 4;
+          saturn.PC += 4;
                   jumpaddr = dat_to_addr(saturn.A);
                   addr_to_dat(saturn.PC, saturn.A);
                   saturn.PC = jumpaddr;
                   return 0;
-                case 7: 	/* CPCEX */
-		  saturn.PC += 4;
+                case 7:     /* CPCEX */
+          saturn.PC += 4;
                   jumpaddr = dat_to_addr(saturn.C);
                   addr_to_dat(saturn.PC, saturn.C);
                   saturn.PC = jumpaddr;
@@ -1038,240 +1019,240 @@ int op1;
         case 3:
           op3 = read_nibble(saturn.PC + 2);
           saturn.CARRY = is_zero_hardware_stat(op3);
-	  if (saturn.CARRY) {
-	    saturn.PC += 3;
+      if (saturn.CARRY) {
+        saturn.PC += 3;
             op4 = read_nibbles(saturn.PC, 2);
-      	    if (op4) {
+            if (op4) {
               if (op4 & 0x80)
                 op4 |= jumpmasks[2];
               jumpaddr = (saturn.PC + op4) & 0xfffff;
-	      saturn.PC = jumpaddr;
+          saturn.PC = jumpaddr;
             } else {
-	      saturn.PC = pop_return_addr();
+          saturn.PC = pop_return_addr();
             }
-	  } else {
+      } else {
             saturn.PC += 5;
-	  }
+      }
           return 0;
         case 4:
         case 5:
           op3 = read_nibble(saturn.PC + 2);
-	  if (op2 == 4) {
-	    saturn.PC += 3;
+      if (op2 == 4) {
+        saturn.PC += 3;
             clear_program_stat(op3);
           } else {
-	    saturn.PC += 3;
-	    set_program_stat(op3);
+        saturn.PC += 3;
+        set_program_stat(op3);
           }
           return 0;
         case 6:
         case 7:
           op3 = read_nibble(saturn.PC + 2);
-	  if (op2 == 6)
+      if (op2 == 6)
             saturn.CARRY = (get_program_stat(op3) == 0)?1:0;
           else
             saturn.CARRY = (get_program_stat(op3) != 0)?1:0;
-	  if (saturn.CARRY) {
-	    saturn.PC += 3;
+      if (saturn.CARRY) {
+        saturn.PC += 3;
             op4 = read_nibbles(saturn.PC, 2);
-      	    if (op4) {
+            if (op4) {
               if (op4 & 0x80)
                 op4 |= jumpmasks[2];
               jumpaddr = (saturn.PC + op4) & 0xfffff;
-	      saturn.PC = jumpaddr;
+          saturn.PC = jumpaddr;
             } else {
-	      saturn.PC = pop_return_addr();
+          saturn.PC = pop_return_addr();
             }
-	  } else {
+      } else {
             saturn.PC += 5;
-	  }
+      }
           return 0;
         case 8:
         case 9:
           op3 = read_nibble(saturn.PC + 2);
-	  if (op2 == 8)
+      if (op2 == 8)
             saturn.CARRY = (saturn.P != op3)?1:0;
           else
             saturn.CARRY = (saturn.P == op3)?1:0;
-	  if (saturn.CARRY) {
-	    saturn.PC += 3;
+      if (saturn.CARRY) {
+        saturn.PC += 3;
             op4 = read_nibbles(saturn.PC, 2);
-      	    if (op4) {
+            if (op4) {
               if (op4 & 0x80)
                 op4 |= jumpmasks[2];
               jumpaddr = (saturn.PC + op4) & 0xfffff;
-	      saturn.PC = jumpaddr;
+          saturn.PC = jumpaddr;
             } else {
-	      saturn.PC = pop_return_addr();
+          saturn.PC = pop_return_addr();
             }
-	  } else {
+      } else {
             saturn.PC += 5;
-	  }
+      }
           return 0;
         case 0xa:
           op3 = read_nibble(saturn.PC + 2);
           switch(op3) {
             case 0:	/* ?A=B */
-	      saturn.CARRY = is_equal_register(saturn.A, saturn.B, A_FIELD);
+          saturn.CARRY = is_equal_register(saturn.A, saturn.B, A_FIELD);
               break;
             case 1:	/* ?B=C */
-	      saturn.CARRY = is_equal_register(saturn.B, saturn.C, A_FIELD);
+          saturn.CARRY = is_equal_register(saturn.B, saturn.C, A_FIELD);
               break;
             case 2:	/* ?A=C */
-	      saturn.CARRY = is_equal_register(saturn.A, saturn.C, A_FIELD);
+          saturn.CARRY = is_equal_register(saturn.A, saturn.C, A_FIELD);
               break;
             case 3:	/* ?C=D */
-	      saturn.CARRY = is_equal_register(saturn.C, saturn.D, A_FIELD);
+          saturn.CARRY = is_equal_register(saturn.C, saturn.D, A_FIELD);
               break;
             case 4:	/* ?A#B */
-	      saturn.CARRY = is_not_equal_register(saturn.A, saturn.B, A_FIELD);
+          saturn.CARRY = is_not_equal_register(saturn.A, saturn.B, A_FIELD);
               break;
             case 5:	/* ?B#C */
-	      saturn.CARRY = is_not_equal_register(saturn.B, saturn.C, A_FIELD);
+          saturn.CARRY = is_not_equal_register(saturn.B, saturn.C, A_FIELD);
               break;
             case 6:	/* ?A#C */
-	      saturn.CARRY = is_not_equal_register(saturn.A, saturn.C, A_FIELD);
+          saturn.CARRY = is_not_equal_register(saturn.A, saturn.C, A_FIELD);
               break;
             case 7:	/* ?C#D */
-	      saturn.CARRY = is_not_equal_register(saturn.C, saturn.D, A_FIELD);
+          saturn.CARRY = is_not_equal_register(saturn.C, saturn.D, A_FIELD);
               break;
             case 8:	/* ?A=0 */
-	      saturn.CARRY = is_zero_register(saturn.A, A_FIELD);
+          saturn.CARRY = is_zero_register(saturn.A, A_FIELD);
               break;
             case 9:	/* ?B=0 */
-	      saturn.CARRY = is_zero_register(saturn.B, A_FIELD);
+          saturn.CARRY = is_zero_register(saturn.B, A_FIELD);
               break;
             case 0xa:	/* ?C=0 */
-	      saturn.CARRY = is_zero_register(saturn.C, A_FIELD);
+          saturn.CARRY = is_zero_register(saturn.C, A_FIELD);
               break;
             case 0xb:	/* ?D=0 */
-	      saturn.CARRY = is_zero_register(saturn.D, A_FIELD);
+          saturn.CARRY = is_zero_register(saturn.D, A_FIELD);
               break;
             case 0xc:	/* ?A#0 */
-	      saturn.CARRY = is_not_zero_register(saturn.A, A_FIELD);
+          saturn.CARRY = is_not_zero_register(saturn.A, A_FIELD);
               break;
             case 0xd:	/* ?B#0 */
-	      saturn.CARRY = is_not_zero_register(saturn.B, A_FIELD);
+          saturn.CARRY = is_not_zero_register(saturn.B, A_FIELD);
               break;
             case 0xe:	/* ?C#0 */
-	      saturn.CARRY = is_not_zero_register(saturn.C, A_FIELD);
+          saturn.CARRY = is_not_zero_register(saturn.C, A_FIELD);
               break;
             case 0xf:	/* ?D#0 */
-	      saturn.CARRY = is_not_zero_register(saturn.D, A_FIELD);
+          saturn.CARRY = is_not_zero_register(saturn.D, A_FIELD);
               break;
             default:
               return 1;
           }
-	  if (saturn.CARRY) {
-	    saturn.PC += 3;
+      if (saturn.CARRY) {
+        saturn.PC += 3;
             op4 = read_nibbles(saturn.PC, 2);
-      	    if (op4) {
+            if (op4) {
               if (op4 & 0x80)
                 op4 |= jumpmasks[2];
               jumpaddr = (saturn.PC + op4) & 0xfffff;
-	      saturn.PC = jumpaddr;
+          saturn.PC = jumpaddr;
             } else {
-	      saturn.PC = pop_return_addr();
+          saturn.PC = pop_return_addr();
             }
-	  } else {
+      } else {
             saturn.PC += 5;
-	  }
+      }
           return 0;
-	case 0xb:
+    case 0xb:
           op3 = read_nibble(saturn.PC + 2);
           switch (op3) {
             case 0:	/* ?A>B */
-	      saturn.CARRY = is_greater_register(saturn.A, saturn.B, A_FIELD);
+          saturn.CARRY = is_greater_register(saturn.A, saturn.B, A_FIELD);
               break;
             case 1:	/* ?B>C */
-	      saturn.CARRY = is_greater_register(saturn.B, saturn.C, A_FIELD);
+          saturn.CARRY = is_greater_register(saturn.B, saturn.C, A_FIELD);
               break;
             case 2:	/* ?C>A */
-	      saturn.CARRY = is_greater_register(saturn.C, saturn.A, A_FIELD);
+          saturn.CARRY = is_greater_register(saturn.C, saturn.A, A_FIELD);
               break;
             case 3:	/* ?D>C */
-	      saturn.CARRY = is_greater_register(saturn.D, saturn.C, A_FIELD);
+          saturn.CARRY = is_greater_register(saturn.D, saturn.C, A_FIELD);
               break;
             case 4:	/* ?A<B */
-	      saturn.CARRY = is_less_register(saturn.A, saturn.B, A_FIELD);
+          saturn.CARRY = is_less_register(saturn.A, saturn.B, A_FIELD);
               break;
             case 5:	/* ?B<C */
-	      saturn.CARRY = is_less_register(saturn.B, saturn.C, A_FIELD);
+          saturn.CARRY = is_less_register(saturn.B, saturn.C, A_FIELD);
               break;
             case 6:	/* ?C<A */
-	      saturn.CARRY = is_less_register(saturn.C, saturn.A, A_FIELD);
+          saturn.CARRY = is_less_register(saturn.C, saturn.A, A_FIELD);
               break;
             case 7:	/* ?D<C */
-	      saturn.CARRY = is_less_register(saturn.D, saturn.C, A_FIELD);
+          saturn.CARRY = is_less_register(saturn.D, saturn.C, A_FIELD);
               break;
             case 8:	/* ?A>=B */
-	      saturn.CARRY = is_greater_or_equal_register(saturn.A, saturn.B, A_FIELD);
+          saturn.CARRY = is_greater_or_equal_register(saturn.A, saturn.B, A_FIELD);
               break;
             case 9:	/* ?B>=C */
-	      saturn.CARRY = is_greater_or_equal_register(saturn.B, saturn.C, A_FIELD);
+          saturn.CARRY = is_greater_or_equal_register(saturn.B, saturn.C, A_FIELD);
               break;
             case 0xa:	/* ?C>=A */
-	      saturn.CARRY = is_greater_or_equal_register(saturn.C, saturn.A, A_FIELD);
+          saturn.CARRY = is_greater_or_equal_register(saturn.C, saturn.A, A_FIELD);
               break;
             case 0xb:	/* ?D>=C */
-	      saturn.CARRY = is_greater_or_equal_register(saturn.D, saturn.C, A_FIELD);
+          saturn.CARRY = is_greater_or_equal_register(saturn.D, saturn.C, A_FIELD);
               break;
             case 0xc:	/* ?A<=B */
-	      saturn.CARRY = is_less_or_equal_register(saturn.A, saturn.B, A_FIELD);
+          saturn.CARRY = is_less_or_equal_register(saturn.A, saturn.B, A_FIELD);
               break;
             case 0xd:	/* ?B<=C */
-	      saturn.CARRY = is_less_or_equal_register(saturn.B, saturn.C, A_FIELD);
+          saturn.CARRY = is_less_or_equal_register(saturn.B, saturn.C, A_FIELD);
               break;
             case 0xe:	/* ?C<=A */
-	      saturn.CARRY = is_less_or_equal_register(saturn.C, saturn.A, A_FIELD);
+          saturn.CARRY = is_less_or_equal_register(saturn.C, saturn.A, A_FIELD);
               break;
             case 0xf:	/* ?D<=C */
-	      saturn.CARRY = is_less_or_equal_register(saturn.D, saturn.C, A_FIELD);
+          saturn.CARRY = is_less_or_equal_register(saturn.D, saturn.C, A_FIELD);
               break;
             default:
               return 1;
           }
-	  if (saturn.CARRY) {
-	    saturn.PC += 3;
+      if (saturn.CARRY) {
+        saturn.PC += 3;
             op4 = read_nibbles(saturn.PC, 2);
-      	    if (op4) {
+            if (op4) {
               if (op4 & 0x80)
                 op4 |= jumpmasks[2];
               jumpaddr = (saturn.PC + op4) & 0xfffff;
-	      saturn.PC = jumpaddr;
+          saturn.PC = jumpaddr;
             } else {
-	      saturn.PC = pop_return_addr();
+          saturn.PC = pop_return_addr();
             }
-	  } else {
+      } else {
             saturn.PC += 5;
-	  }
+      }
           return 0;
-	case 0xc:
+    case 0xc:
           op3 = read_nibbles(saturn.PC + 2, 4);
           if (op3 & 0x8000)
             op3 |= jumpmasks[4];
           jumpaddr = (saturn.PC + op3 + 2) & 0xfffff;
           saturn.PC = jumpaddr;
-	  return 0;
-	case 0xd:
+      return 0;
+    case 0xd:
           op3 = read_nibbles(saturn.PC + 2, 5);
           jumpaddr = op3;
           saturn.PC = jumpaddr;
-	  return 0;
-	case 0xe:
+      return 0;
+    case 0xe:
           op3 = read_nibbles(saturn.PC + 2, 4);
           if (op3 & 0x8000)
             op3 |= jumpmasks[4];
           jumpaddr = (saturn.PC + op3 + 6) & 0xfffff;
-	  push_return_addr(saturn.PC + 6);
+      push_return_addr(saturn.PC + 6);
           saturn.PC = jumpaddr;
-	  return 0;
-	case 0xf:
+      return 0;
+    case 0xf:
           op3 = read_nibbles(saturn.PC + 2, 5);
           jumpaddr = op3;
-	  push_return_addr(saturn.PC + 7);
+      push_return_addr(saturn.PC + 7);
           saturn.PC = jumpaddr;
-	  return 0;
+      return 0;
         default:
           return 1;
       }
@@ -1280,49 +1261,49 @@ int op1;
       if (op2 < 8) {
         switch(op3) {
           case 0:	/* ?A=B */
-	    saturn.CARRY = is_equal_register(saturn.A, saturn.B, op2);
+        saturn.CARRY = is_equal_register(saturn.A, saturn.B, op2);
             break;
           case 1:	/* ?B=C */
-	    saturn.CARRY = is_equal_register(saturn.B, saturn.C, op2);
+        saturn.CARRY = is_equal_register(saturn.B, saturn.C, op2);
             break;
           case 2:	/* ?A=C */
-	    saturn.CARRY = is_equal_register(saturn.A, saturn.C, op2);
+        saturn.CARRY = is_equal_register(saturn.A, saturn.C, op2);
             break;
           case 3:	/* ?C=D */
-	    saturn.CARRY = is_equal_register(saturn.C, saturn.D, op2);
+        saturn.CARRY = is_equal_register(saturn.C, saturn.D, op2);
             break;
           case 4:	/* ?A#B */
-	    saturn.CARRY = is_not_equal_register(saturn.A, saturn.B, op2);
+        saturn.CARRY = is_not_equal_register(saturn.A, saturn.B, op2);
             break;
           case 5:	/* ?B#C */
-	    saturn.CARRY = is_not_equal_register(saturn.B, saturn.C, op2);
+        saturn.CARRY = is_not_equal_register(saturn.B, saturn.C, op2);
             break;
           case 6:	/* ?A#C */
-	    saturn.CARRY = is_not_equal_register(saturn.A, saturn.C, op2);
+        saturn.CARRY = is_not_equal_register(saturn.A, saturn.C, op2);
             break;
           case 7:	/* ?C#D */
-	    saturn.CARRY = is_not_equal_register(saturn.C, saturn.D, op2);
+        saturn.CARRY = is_not_equal_register(saturn.C, saturn.D, op2);
             break;
           case 8:	/* ?A=0 */
-	    saturn.CARRY = is_zero_register(saturn.A, op2);
+        saturn.CARRY = is_zero_register(saturn.A, op2);
             break;
           case 9:	/* ?B=0 */
-	    saturn.CARRY = is_zero_register(saturn.B, op2);
+        saturn.CARRY = is_zero_register(saturn.B, op2);
             break;
           case 0xa:	/* ?C=0 */
-	    saturn.CARRY = is_zero_register(saturn.C, op2);
+        saturn.CARRY = is_zero_register(saturn.C, op2);
             break;
           case 0xb:	/* ?D=0 */
-	    saturn.CARRY = is_zero_register(saturn.D, op2);
+        saturn.CARRY = is_zero_register(saturn.D, op2);
             break;
           case 0xc:	/* ?A#0 */
-	    saturn.CARRY = is_not_zero_register(saturn.A, op2);
+        saturn.CARRY = is_not_zero_register(saturn.A, op2);
             break;
           case 0xd:	/* ?B#0 */
-	    saturn.CARRY = is_not_zero_register(saturn.B, op2);
+        saturn.CARRY = is_not_zero_register(saturn.B, op2);
             break;
           case 0xe:	/* ?C#0 */
-	    saturn.CARRY = is_not_zero_register(saturn.C, op2);
+        saturn.CARRY = is_not_zero_register(saturn.C, op2);
             break;
           case 0xf:	/* ?D#0 */
             saturn.CARRY = is_not_zero_register(saturn.D, op2);
@@ -1334,67 +1315,67 @@ int op1;
         op2 &= 7;
         switch (op3) {
           case 0:	/* ?A>B */
-	    saturn.CARRY = is_greater_register(saturn.A, saturn.B, op2);
+        saturn.CARRY = is_greater_register(saturn.A, saturn.B, op2);
             break;
           case 1:	/* ?B>C */
-	    saturn.CARRY = is_greater_register(saturn.B, saturn.C, op2);
+        saturn.CARRY = is_greater_register(saturn.B, saturn.C, op2);
             break;
           case 2:	/* ?C>A */
-	    saturn.CARRY = is_greater_register(saturn.C, saturn.A, op2);
+        saturn.CARRY = is_greater_register(saturn.C, saturn.A, op2);
             break;
           case 3:	/* ?D>C */
-	    saturn.CARRY = is_greater_register(saturn.D, saturn.C, op2);
+        saturn.CARRY = is_greater_register(saturn.D, saturn.C, op2);
             break;
           case 4:	/* ?A<B */
-	    saturn.CARRY = is_less_register(saturn.A, saturn.B, op2);
+        saturn.CARRY = is_less_register(saturn.A, saturn.B, op2);
             break;
           case 5:	/* ?B<C */
-	    saturn.CARRY = is_less_register(saturn.B, saturn.C, op2);
+        saturn.CARRY = is_less_register(saturn.B, saturn.C, op2);
             break;
           case 6:	/* ?C<A */
-	    saturn.CARRY = is_less_register(saturn.C, saturn.A, op2);
+        saturn.CARRY = is_less_register(saturn.C, saturn.A, op2);
             break;
           case 7:	/* ?D<C */
-	    saturn.CARRY = is_less_register(saturn.D, saturn.C, op2);
+        saturn.CARRY = is_less_register(saturn.D, saturn.C, op2);
             break;
           case 8:	/* ?A>=B */
-	    saturn.CARRY = is_greater_or_equal_register(saturn.A, saturn.B, op2);
+        saturn.CARRY = is_greater_or_equal_register(saturn.A, saturn.B, op2);
             break;
           case 9:	/* ?B>=C */
-	    saturn.CARRY = is_greater_or_equal_register(saturn.B, saturn.C, op2);
+        saturn.CARRY = is_greater_or_equal_register(saturn.B, saturn.C, op2);
             break;
           case 0xa:	/* ?C>=A */
-	    saturn.CARRY = is_greater_or_equal_register(saturn.C, saturn.A, op2);
+        saturn.CARRY = is_greater_or_equal_register(saturn.C, saturn.A, op2);
             break;
           case 0xb:	/* ?D>=C */
-	    saturn.CARRY = is_greater_or_equal_register(saturn.D, saturn.C, op2);
+        saturn.CARRY = is_greater_or_equal_register(saturn.D, saturn.C, op2);
             break;
           case 0xc:	/* ?A<=B */
-	    saturn.CARRY = is_less_or_equal_register(saturn.A, saturn.B, op2);
+        saturn.CARRY = is_less_or_equal_register(saturn.A, saturn.B, op2);
             break;
           case 0xd:	/* ?B<=C */
-	    saturn.CARRY = is_less_or_equal_register(saturn.B, saturn.C, op2);
+        saturn.CARRY = is_less_or_equal_register(saturn.B, saturn.C, op2);
             break;
           case 0xe:	/* ?C<=A */
-	    saturn.CARRY = is_less_or_equal_register(saturn.C, saturn.A, op2);
+        saturn.CARRY = is_less_or_equal_register(saturn.C, saturn.A, op2);
             break;
           case 0xf:	/* ?D<=C */
-	    saturn.CARRY = is_less_or_equal_register(saturn.D, saturn.C, op2);
+        saturn.CARRY = is_less_or_equal_register(saturn.D, saturn.C, op2);
             break;
           default:
             return 1;
         }
       }
       if (saturn.CARRY) {
-	saturn.PC += 3;
+    saturn.PC += 3;
         op4 = read_nibbles(saturn.PC, 2);
-      	if (op4) {
+        if (op4) {
           if (op4 & 0x80)
             op4 |= jumpmasks[2];
           jumpaddr = (saturn.PC + op4) & 0xfffff;
-	  saturn.PC = jumpaddr;
+      saturn.PC = jumpaddr;
         } else {
-	  saturn.PC = pop_return_addr();
+      saturn.PC = pop_return_addr();
         }
       } else {
         saturn.PC += 5;
@@ -1403,144 +1384,144 @@ int op1;
     case 0xa:
       op3 = read_nibble(saturn.PC + 2);
       if (op2 < 8) {
-	switch(op3) {
-	  case 0:	/* A=A+B */
-	    saturn.PC += 3;
-	    add_register(saturn.A, saturn.A, saturn.B, op2);
-	    return 0;
-	  case 1:	/* B=B+C */
-	    saturn.PC += 3;
-	    add_register(saturn.B, saturn.B, saturn.C, op2);
-	    return 0;
-	  case 2:	/* C=C+A */
-	    saturn.PC += 3;
-	    add_register(saturn.C, saturn.C, saturn.A, op2);
-	    return 0;
-	  case 3:	/* D=D+C */
-	    saturn.PC += 3;
-	    add_register(saturn.D, saturn.D, saturn.C, op2);
-	    return 0;
-	  case 4:	/* A=A+A */
-	    saturn.PC += 3;
-	    add_register(saturn.A, saturn.A, saturn.A, op2);
-	    return 0;
-	  case 5:	/* B=B+B */
-	    saturn.PC += 3;
-	    add_register(saturn.B, saturn.B, saturn.B, op2);
-	    return 0;
-	  case 6:	/* C=C+C */
-	    saturn.PC += 3;
-	    add_register(saturn.C, saturn.C, saturn.C, op2);
-	    return 0;
-	  case 7:	/* D=D+D */
-	    saturn.PC += 3;
-	    add_register(saturn.D, saturn.D, saturn.D, op2);
-	    return 0;
-	  case 8:	/* B=B+A */
-	    saturn.PC += 3;
-	    add_register(saturn.B, saturn.B, saturn.A, op2);
-	    return 0;
-	  case 9:	/* C=C+B */
-	    saturn.PC += 3;
-	    add_register(saturn.C, saturn.C, saturn.B, op2);
-	    return 0;
-	  case 0xa:	/* A=A+C */
-	    saturn.PC += 3;
-	    add_register(saturn.A, saturn.A, saturn.C, op2);
-	    return 0;
-	  case 0xb:	/* C=C+D */
-	    saturn.PC += 3;
-	    add_register(saturn.C, saturn.C, saturn.D, op2);
-	    return 0;
-	  case 0xc:	/* A=A-1 */
-	    saturn.PC += 3;
-	    dec_register(saturn.A, op2);
-	    return 0;
-	  case 0xd:	/* B=B-1 */
-	    saturn.PC += 3;
-	    dec_register(saturn.B, op2);
-	    return 0;
-	  case 0xe:	/* C=C-1 */
-	    saturn.PC += 3;
-	    dec_register(saturn.C, op2);
-	    return 0;
-	  case 0xf:	/* D=D-1 */
-	    saturn.PC += 3;
-	    dec_register(saturn.D, op2);
-	    return 0;
-	  default:
-	    return 1;
-	}
+    switch(op3) {
+      case 0:	/* A=A+B */
+        saturn.PC += 3;
+        add_register(saturn.A, saturn.A, saturn.B, op2);
+        return 0;
+      case 1:	/* B=B+C */
+        saturn.PC += 3;
+        add_register(saturn.B, saturn.B, saturn.C, op2);
+        return 0;
+      case 2:	/* C=C+A */
+        saturn.PC += 3;
+        add_register(saturn.C, saturn.C, saturn.A, op2);
+        return 0;
+      case 3:	/* D=D+C */
+        saturn.PC += 3;
+        add_register(saturn.D, saturn.D, saturn.C, op2);
+        return 0;
+      case 4:	/* A=A+A */
+        saturn.PC += 3;
+        add_register(saturn.A, saturn.A, saturn.A, op2);
+        return 0;
+      case 5:	/* B=B+B */
+        saturn.PC += 3;
+        add_register(saturn.B, saturn.B, saturn.B, op2);
+        return 0;
+      case 6:	/* C=C+C */
+        saturn.PC += 3;
+        add_register(saturn.C, saturn.C, saturn.C, op2);
+        return 0;
+      case 7:	/* D=D+D */
+        saturn.PC += 3;
+        add_register(saturn.D, saturn.D, saturn.D, op2);
+        return 0;
+      case 8:	/* B=B+A */
+        saturn.PC += 3;
+        add_register(saturn.B, saturn.B, saturn.A, op2);
+        return 0;
+      case 9:	/* C=C+B */
+        saturn.PC += 3;
+        add_register(saturn.C, saturn.C, saturn.B, op2);
+        return 0;
+      case 0xa:	/* A=A+C */
+        saturn.PC += 3;
+        add_register(saturn.A, saturn.A, saturn.C, op2);
+        return 0;
+      case 0xb:	/* C=C+D */
+        saturn.PC += 3;
+        add_register(saturn.C, saturn.C, saturn.D, op2);
+        return 0;
+      case 0xc:	/* A=A-1 */
+        saturn.PC += 3;
+        dec_register(saturn.A, op2);
+        return 0;
+      case 0xd:	/* B=B-1 */
+        saturn.PC += 3;
+        dec_register(saturn.B, op2);
+        return 0;
+      case 0xe:	/* C=C-1 */
+        saturn.PC += 3;
+        dec_register(saturn.C, op2);
+        return 0;
+      case 0xf:	/* D=D-1 */
+        saturn.PC += 3;
+        dec_register(saturn.D, op2);
+        return 0;
+      default:
+        return 1;
+    }
       } else {
-	op2 &= 7;
-	switch(op3) {
-	  case 0:	/* A=0 */
-	    saturn.PC += 3;
-	    zero_register(saturn.A, op2);
-	    return 0;
-	  case 1:	/* B=0 */
-	    saturn.PC += 3;
-	    zero_register(saturn.B, op2);
-	    return 0;
-	  case 2:	/* C=0 */
-	    saturn.PC += 3;
-	    zero_register(saturn.C, op2);
-	    return 0;
-	  case 3:	/* D=0 */
-	    saturn.PC += 3;
-	    zero_register(saturn.D, op2);
-	    return 0;
-	  case 4:	/* A=B */
-	    saturn.PC += 3;
-	    copy_register(saturn.A, saturn.B, op2);
-	    return 0;
-	  case 5:	/* B=C */
-	    saturn.PC += 3;
-	    copy_register(saturn.B, saturn.C, op2);
-	    return 0;
-	  case 6:	/* C=A */
-	    saturn.PC += 3;
-	    copy_register(saturn.C, saturn.A, op2);
-	    return 0;
-	  case 7:	/* D=C */
-	    saturn.PC += 3;
-	    copy_register(saturn.D, saturn.C, op2);
-	    return 0;
-	  case 8:	/* B=A */
-	    saturn.PC += 3;
-	    copy_register(saturn.B, saturn.A, op2);
-	    return 0;
-	  case 9:	/* C=B */
-	    saturn.PC += 3;
-	    copy_register(saturn.C, saturn.B, op2);
-	    return 0;
-	  case 0xa:	/* A=C */
-	    saturn.PC += 3;
-	    copy_register(saturn.A, saturn.C, op2);
-	    return 0;
-	  case 0xb:	/* C=D */
-	    saturn.PC += 3;
-	    copy_register(saturn.C, saturn.D, op2);
-	    return 0;
-	  case 0xc:	/* ABEX */
-	    saturn.PC += 3;
-	    exchange_register(saturn.A, saturn.B, op2);
-	    return 0;
-	  case 0xd:	/* BCEX */
-	    saturn.PC += 3;
-	    exchange_register(saturn.B, saturn.C, op2);
-	    return 0;
-	  case 0xe:	/* ACEX */
-	    saturn.PC += 3;
-	    exchange_register(saturn.A, saturn.C, op2);
-	    return 0;
-	  case 0xf:	/* CDEX */
-	    saturn.PC += 3;
-	    exchange_register(saturn.C, saturn.D, op2);
-	    return 0;
-	  default:
-	    return 1;
-	}
+    op2 &= 7;
+    switch(op3) {
+      case 0:	/* A=0 */
+        saturn.PC += 3;
+        zero_register(saturn.A, op2);
+        return 0;
+      case 1:	/* B=0 */
+        saturn.PC += 3;
+        zero_register(saturn.B, op2);
+        return 0;
+      case 2:	/* C=0 */
+        saturn.PC += 3;
+        zero_register(saturn.C, op2);
+        return 0;
+      case 3:	/* D=0 */
+        saturn.PC += 3;
+        zero_register(saturn.D, op2);
+        return 0;
+      case 4:	/* A=B */
+        saturn.PC += 3;
+        copy_register(saturn.A, saturn.B, op2);
+        return 0;
+      case 5:	/* B=C */
+        saturn.PC += 3;
+        copy_register(saturn.B, saturn.C, op2);
+        return 0;
+      case 6:	/* C=A */
+        saturn.PC += 3;
+        copy_register(saturn.C, saturn.A, op2);
+        return 0;
+      case 7:	/* D=C */
+        saturn.PC += 3;
+        copy_register(saturn.D, saturn.C, op2);
+        return 0;
+      case 8:	/* B=A */
+        saturn.PC += 3;
+        copy_register(saturn.B, saturn.A, op2);
+        return 0;
+      case 9:	/* C=B */
+        saturn.PC += 3;
+        copy_register(saturn.C, saturn.B, op2);
+        return 0;
+      case 0xa:	/* A=C */
+        saturn.PC += 3;
+        copy_register(saturn.A, saturn.C, op2);
+        return 0;
+      case 0xb:	/* C=D */
+        saturn.PC += 3;
+        copy_register(saturn.C, saturn.D, op2);
+        return 0;
+      case 0xc:	/* ABEX */
+        saturn.PC += 3;
+        exchange_register(saturn.A, saturn.B, op2);
+        return 0;
+      case 0xd:	/* BCEX */
+        saturn.PC += 3;
+        exchange_register(saturn.B, saturn.C, op2);
+        return 0;
+      case 0xe:	/* ACEX */
+        saturn.PC += 3;
+        exchange_register(saturn.A, saturn.C, op2);
+        return 0;
+      case 0xf:	/* CDEX */
+        saturn.PC += 3;
+        exchange_register(saturn.C, saturn.D, op2);
+        return 0;
+      default:
+        return 1;
+    }
       }
     case 0xb:
       op3 = read_nibble(saturn.PC + 2);
@@ -1564,19 +1545,19 @@ int op1;
             return 0;
           case 4:	/* A=A+1 */
             saturn.PC += 3;
-	    inc_register(saturn.A, op2);
+        inc_register(saturn.A, op2);
             return 0;
           case 5:	/* B=B+1 */
             saturn.PC += 3;
-	    inc_register(saturn.B, op2);
+        inc_register(saturn.B, op2);
             return 0;
           case 6:	/* C=C+1 */
             saturn.PC += 3;
-	    inc_register(saturn.C, op2);
+        inc_register(saturn.C, op2);
             return 0;
           case 7:	/* D=D+1 */
             saturn.PC += 3;
-	    inc_register(saturn.D, op2);
+        inc_register(saturn.D, op2);
             return 0;
           case 8:	/* B=B-A */
             saturn.PC += 3;
@@ -1614,7 +1595,7 @@ int op1;
             return 1;
         }
       } else {
-	op2 &= 7;
+    op2 &= 7;
         switch (op3) {
           case 0:	/* ASL */
             saturn.PC += 3;
@@ -1650,35 +1631,35 @@ int op1;
             return 0;
           case 8:	/* A=-A */
             saturn.PC += 3;
-	    complement_2_register(saturn.A, op2);
+        complement_2_register(saturn.A, op2);
             return 0;
           case 9:	/* B=-B */
             saturn.PC += 3;
-	    complement_2_register(saturn.B, op2);
+        complement_2_register(saturn.B, op2);
             return 0;
           case 0xa:	/* C=-C */
             saturn.PC += 3;
-	    complement_2_register(saturn.C, op2);
+        complement_2_register(saturn.C, op2);
             return 0;
           case 0xb:	/* D=-D */
             saturn.PC += 3;
-	    complement_2_register(saturn.D, op2);
+        complement_2_register(saturn.D, op2);
             return 0;
           case 0xc:	/* A=-A-1 */
             saturn.PC += 3;
-	    complement_1_register(saturn.A, op2);
+        complement_1_register(saturn.A, op2);
             return 0;
           case 0xd:	/* B=-B-1 */
             saturn.PC += 3;
-	    complement_1_register(saturn.B, op2);
+        complement_1_register(saturn.B, op2);
             return 0;
           case 0xe:	/* C=-C-1 */
             saturn.PC += 3;
-	    complement_1_register(saturn.C, op2);
+        complement_1_register(saturn.C, op2);
             return 0;
           case 0xf:	/* D=-D-1 */
             saturn.PC += 3;
-	    complement_1_register(saturn.D, op2);
+        complement_1_register(saturn.D, op2);
             return 0;
           default:
             return 1;
@@ -1687,140 +1668,140 @@ int op1;
     case 0xc:
       switch(op2) {
         case 0:		/* A=A+B */
-	  saturn.PC += 2;
-	  add_register(saturn.A, saturn.A, saturn.B, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.A, saturn.A, saturn.B, A_FIELD);
           return 0;
         case 1:		/* B=B+C */
-	  saturn.PC += 2;
-	  add_register(saturn.B, saturn.B, saturn.C, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.B, saturn.B, saturn.C, A_FIELD);
           return 0;
         case 2:		/* C=C+A */
-	  saturn.PC += 2;
-	  add_register(saturn.C, saturn.C, saturn.A, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.C, saturn.C, saturn.A, A_FIELD);
           return 0;
         case 3:		/* D=D+C */
-	  saturn.PC += 2;
-	  add_register(saturn.D, saturn.D, saturn.C, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.D, saturn.D, saturn.C, A_FIELD);
           return 0;
         case 4:		/* A=A+A */
-	  saturn.PC += 2;
-	  add_register(saturn.A, saturn.A, saturn.A, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.A, saturn.A, saturn.A, A_FIELD);
           return 0;
         case 5:		/* B=B+B */
-	  saturn.PC += 2;
-	  add_register(saturn.B, saturn.B, saturn.B, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.B, saturn.B, saturn.B, A_FIELD);
           return 0;
         case 6:		/* C=C+C */
-	  saturn.PC += 2;
-	  add_register(saturn.C, saturn.C, saturn.C, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.C, saturn.C, saturn.C, A_FIELD);
           return 0;
         case 7:		/* D=D+D */
-	  saturn.PC += 2;
-	  add_register(saturn.D, saturn.D, saturn.D, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.D, saturn.D, saturn.D, A_FIELD);
           return 0;
         case 8:		/* B=B+A */
-	  saturn.PC += 2;
-	  add_register(saturn.B, saturn.B, saturn.A, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.B, saturn.B, saturn.A, A_FIELD);
           return 0;
         case 9:		/* C=C+B */
-	  saturn.PC += 2;
-	  add_register(saturn.C, saturn.C, saturn.B, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.C, saturn.C, saturn.B, A_FIELD);
           return 0;
         case 0xa:	/* A=A+C */
-	  saturn.PC += 2;
-	  add_register(saturn.A, saturn.A, saturn.C, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.A, saturn.A, saturn.C, A_FIELD);
           return 0;
         case 0xb:	/* C=C+D */
-	  saturn.PC += 2;
-	  add_register(saturn.C, saturn.C, saturn.D, A_FIELD);
+      saturn.PC += 2;
+      add_register(saturn.C, saturn.C, saturn.D, A_FIELD);
           return 0;
         case 0xc:	/* A=A-1 */
-	  saturn.PC += 2;
-	  dec_register(saturn.A, A_FIELD);
-	  return 0;
+      saturn.PC += 2;
+      dec_register(saturn.A, A_FIELD);
+      return 0;
         case 0xd:	/* B=B-1 */
-	  saturn.PC += 2;
-	  dec_register(saturn.B, A_FIELD);
-	  return 0;
+      saturn.PC += 2;
+      dec_register(saturn.B, A_FIELD);
+      return 0;
         case 0xe:	/* C=C-1 */
-	  saturn.PC += 2;
-	  dec_register(saturn.C, A_FIELD);
-	  return 0;
+      saturn.PC += 2;
+      dec_register(saturn.C, A_FIELD);
+      return 0;
         case 0xf:	/* D=D-1 */
-	  saturn.PC += 2;
-	  dec_register(saturn.D, A_FIELD);
-	  return 0;
+      saturn.PC += 2;
+      dec_register(saturn.D, A_FIELD);
+      return 0;
         default:
           return 1;
       }
     case 0xd:
       switch(op2) {
-	case 0:		/* A=0 */
-	  saturn.PC += 2;
-	  zero_register(saturn.A, A_FIELD);
-	  return 0;
-	case 1:		/* B=0 */
-	  saturn.PC += 2;
-	  zero_register(saturn.B, A_FIELD);
-	  return 0;
-	case 2:		/* C=0 */
-	  saturn.PC += 2;
-	  zero_register(saturn.C, A_FIELD);
-	  return 0;
-	case 3:		/* D=0 */
-	  saturn.PC += 2;
-	  zero_register(saturn.D, A_FIELD);
-	  return 0;
+    case 0:		/* A=0 */
+      saturn.PC += 2;
+      zero_register(saturn.A, A_FIELD);
+      return 0;
+    case 1:		/* B=0 */
+      saturn.PC += 2;
+      zero_register(saturn.B, A_FIELD);
+      return 0;
+    case 2:		/* C=0 */
+      saturn.PC += 2;
+      zero_register(saturn.C, A_FIELD);
+      return 0;
+    case 3:		/* D=0 */
+      saturn.PC += 2;
+      zero_register(saturn.D, A_FIELD);
+      return 0;
         case 4:		/* A=B */
-	  saturn.PC += 2;
-	  copy_register(saturn.A, saturn.B, A_FIELD);
-	  return 0;
-	case 5:		/* B=C */
-	  saturn.PC += 2;
-	  copy_register(saturn.B, saturn.C, A_FIELD);
-	  return 0;
-	case 6:		/* C=A */
-	  saturn.PC += 2;
-	  copy_register(saturn.C, saturn.A, A_FIELD);
-	  return 0;
-	case 7:		/* D=C */
-	  saturn.PC += 2;
-	  copy_register(saturn.D, saturn.C, A_FIELD);
-	  return 0;
-	case 8:		/* B=A */
-	  saturn.PC += 2;
-	  copy_register(saturn.B, saturn.A, A_FIELD);
-	  return 0;
-	case 9:		/* C=B */
-	  saturn.PC += 2;
-	  copy_register(saturn.C, saturn.B, A_FIELD);
-	  return 0;
-	case 0xa:	/* A=C */
-	  saturn.PC += 2;
-	  copy_register(saturn.A, saturn.C, A_FIELD);
-	  return 0;
-	case 0xb:	/* C=D */
-	  saturn.PC += 2;
-	  copy_register(saturn.C, saturn.D, A_FIELD);
-	  return 0;
-	case 0xc:	/* ABEX */
-	  saturn.PC += 2;
-	  exchange_register(saturn.A, saturn.B, A_FIELD);
-	  return 0;
-	case 0xd:	/* BCEX */
-	  saturn.PC += 2;
-	  exchange_register(saturn.B, saturn.C, A_FIELD);
-	  return 0;
-	case 0xe:	/* ACEX */
-	  saturn.PC += 2;
-	  exchange_register(saturn.A, saturn.C, A_FIELD);
-	  return 0;
-	case 0xf:	/* CDEX */
-	  saturn.PC += 2;
-	  exchange_register(saturn.C, saturn.D, A_FIELD);
-	  return 0;
-	default:
-	  return 1;
+      saturn.PC += 2;
+      copy_register(saturn.A, saturn.B, A_FIELD);
+      return 0;
+    case 5:		/* B=C */
+      saturn.PC += 2;
+      copy_register(saturn.B, saturn.C, A_FIELD);
+      return 0;
+    case 6:		/* C=A */
+      saturn.PC += 2;
+      copy_register(saturn.C, saturn.A, A_FIELD);
+      return 0;
+    case 7:		/* D=C */
+      saturn.PC += 2;
+      copy_register(saturn.D, saturn.C, A_FIELD);
+      return 0;
+    case 8:		/* B=A */
+      saturn.PC += 2;
+      copy_register(saturn.B, saturn.A, A_FIELD);
+      return 0;
+    case 9:		/* C=B */
+      saturn.PC += 2;
+      copy_register(saturn.C, saturn.B, A_FIELD);
+      return 0;
+    case 0xa:	/* A=C */
+      saturn.PC += 2;
+      copy_register(saturn.A, saturn.C, A_FIELD);
+      return 0;
+    case 0xb:	/* C=D */
+      saturn.PC += 2;
+      copy_register(saturn.C, saturn.D, A_FIELD);
+      return 0;
+    case 0xc:	/* ABEX */
+      saturn.PC += 2;
+      exchange_register(saturn.A, saturn.B, A_FIELD);
+      return 0;
+    case 0xd:	/* BCEX */
+      saturn.PC += 2;
+      exchange_register(saturn.B, saturn.C, A_FIELD);
+      return 0;
+    case 0xe:	/* ACEX */
+      saturn.PC += 2;
+      exchange_register(saturn.A, saturn.C, A_FIELD);
+      return 0;
+    case 0xf:	/* CDEX */
+      saturn.PC += 2;
+      exchange_register(saturn.C, saturn.D, A_FIELD);
+      return 0;
+    default:
+      return 1;
       }
     case 0xe:
       switch (op2) {
@@ -1842,19 +1823,19 @@ int op1;
           return 0;
         case 4:	/* A=A+1 */
           saturn.PC += 2;
-	  inc_register(saturn.A, A_FIELD);
+      inc_register(saturn.A, A_FIELD);
           return 0;
         case 5:	/* B=B+1 */
           saturn.PC += 2;
-	  inc_register(saturn.B, A_FIELD);
+      inc_register(saturn.B, A_FIELD);
           return 0;
         case 6:	/* C=C+1 */
           saturn.PC += 2;
-	  inc_register(saturn.C, A_FIELD);
+      inc_register(saturn.C, A_FIELD);
           return 0;
         case 7:	/* D=D+1 */
           saturn.PC += 2;
-	  inc_register(saturn.D, A_FIELD);
+      inc_register(saturn.D, A_FIELD);
           return 0;
         case 8:	/* B=B-A */
           saturn.PC += 2;
@@ -1927,35 +1908,35 @@ int op1;
           return 0;
         case 8:	/* A=-A */
           saturn.PC += 2;
-	  complement_2_register(saturn.A, A_FIELD);
+      complement_2_register(saturn.A, A_FIELD);
           return 0;
         case 9:	/* B=-B */
           saturn.PC += 2;
-	  complement_2_register(saturn.B, A_FIELD);
+      complement_2_register(saturn.B, A_FIELD);
           return 0;
         case 0xa:	/* C=-C */
           saturn.PC += 2;
-	  complement_2_register(saturn.C, A_FIELD);
+      complement_2_register(saturn.C, A_FIELD);
           return 0;
         case 0xb:	/* D=-D */
           saturn.PC += 2;
-	  complement_2_register(saturn.D, A_FIELD);
+      complement_2_register(saturn.D, A_FIELD);
           return 0;
         case 0xc:	/* A=-A-1 */
           saturn.PC += 2;
-	  complement_1_register(saturn.A, A_FIELD);
+      complement_1_register(saturn.A, A_FIELD);
           return 0;
         case 0xd:	/* B=-B-1 */
           saturn.PC += 2;
-	  complement_1_register(saturn.B, A_FIELD);
+      complement_1_register(saturn.B, A_FIELD);
           return 0;
         case 0xe:	/* C=-C-1 */
           saturn.PC += 2;
-	  complement_1_register(saturn.C, A_FIELD);
+      complement_1_register(saturn.C, A_FIELD);
           return 0;
         case 0xf:	/* D=-D-1 */
           saturn.PC += 2;
-	  complement_1_register(saturn.D, A_FIELD);
+      complement_1_register(saturn.D, A_FIELD);
           return 0;
         default:
           return 1;
@@ -1965,13 +1946,7 @@ int op1;
   }
 }
 
-inline int
-#ifdef __FunctionProto__
-step_instruction(void)
-#else
-step_instruction()
-#endif
-{
+inline int step_instruction(void) {
   int op0, op1, op2, op3;
   int stop = 0;
 
@@ -1984,55 +1959,55 @@ step_instruction()
       switch (op1) {
         case 0:	/* RTNSXM */
           saturn.XM = 1;
-	  saturn.PC = pop_return_addr();
-	  break;
+      saturn.PC = pop_return_addr();
+      break;
         case 1:	/* RTN */
-	  saturn.PC = pop_return_addr();
-	  break;
+      saturn.PC = pop_return_addr();
+      break;
         case 2:	/* RTNSC */
-	  saturn.CARRY = 1;
-	  saturn.PC = pop_return_addr();
-	  break;
+      saturn.CARRY = 1;
+      saturn.PC = pop_return_addr();
+      break;
         case 3:	/* RTNCC */
-	  saturn.CARRY = 0;
-	  saturn.PC = pop_return_addr();
-	  break;
+      saturn.CARRY = 0;
+      saturn.PC = pop_return_addr();
+      break;
         case 4:	/* SETHEX */
-	  saturn.PC += 2;
-	  saturn.hexmode = HEX;
-	  break;
+      saturn.PC += 2;
+      saturn.hexmode = HEX;
+      break;
         case 5:	/* SETDEC */
-	  saturn.PC += 2;
-	  saturn.hexmode = DEC;
-	  break;
+      saturn.PC += 2;
+      saturn.hexmode = DEC;
+      break;
         case 6:	/* RSTK=C */
           jumpaddr = dat_to_addr(saturn.C);
-     	  push_return_addr(jumpaddr);
+          push_return_addr(jumpaddr);
           saturn.PC += 2;
-	  break;
+      break;
         case 7:	/* C=RSTK */
           saturn.PC += 2;
-	  jumpaddr = pop_return_addr();
+      jumpaddr = pop_return_addr();
           addr_to_dat(jumpaddr, saturn.C);
-	  break;
+      break;
         case 8:	/* CLRST */
           saturn.PC += 2;
           clear_status();
-	  break;
+      break;
         case 9:	/* C=ST */
           saturn.PC += 2;
           status_to_register(saturn.C);
-	  break;
+      break;
         case 0xa:	/* ST=C */
           saturn.PC += 2;
           register_to_status(saturn.C);
-	  break;
+      break;
         case 0xb:	/* CSTEX */
           saturn.PC += 2;
           swap_register_status(saturn.C);
-	  break;
+      break;
         case 0xc:	/* P=P+1 */
-	  saturn.PC += 2;
+      saturn.PC += 2;
           if (saturn.P == 0xf) {
             saturn.P = 0;
             saturn.CARRY = 1;
@@ -2040,9 +2015,9 @@ step_instruction()
             saturn.P += 1;
             saturn.CARRY = 0;
           }
-	  break;
+      break;
         case 0xd:	/* P=P-1 */
-	  saturn.PC += 2;
+      saturn.PC += 2;
           if (saturn.P == 0) {
             saturn.P = 0xf;
             saturn.CARRY = 1;
@@ -2050,7 +2025,7 @@ step_instruction()
             saturn.P -= 1;
             saturn.CARRY = 0;
           }
-	  break;
+      break;
         case 0xe:
           op2 = read_nibble(saturn.PC + 2);
           op3 = read_nibble(saturn.PC + 3);
@@ -2123,10 +2098,10 @@ step_instruction()
               stop = 1;
               break;
           }
-	  break;
+      break;
         case 0xf:	/* RTI */
           do_return_interupt();
-	  break;
+      break;
         default:
           stop = 1;
           break;
@@ -2156,7 +2131,7 @@ step_instruction()
           jumpaddr = (saturn.PC + op2 + 1) & 0xfffff;
           saturn.PC = jumpaddr;
         } else {
-	  saturn.PC = pop_return_addr();
+      saturn.PC = pop_return_addr();
         }
       } else {
         saturn.PC += 3;
@@ -2164,14 +2139,14 @@ step_instruction()
       break;
     case 5:
       if (saturn.CARRY == 0) {
-	op2 = read_nibbles(saturn.PC + 1, 2);
+    op2 = read_nibbles(saturn.PC + 1, 2);
         if (op2) {
           if (op2 & 0x80)
             op2 |= jumpmasks[2];
           jumpaddr = (saturn.PC + op2 + 1) & 0xfffff;
           saturn.PC = jumpaddr;
         } else {
-	  saturn.PC = pop_return_addr();
+      saturn.PC = pop_return_addr();
         }
       } else {
         saturn.PC += 3;
@@ -2186,7 +2161,7 @@ step_instruction()
         saturn.PC += 5;
         if (op3 != 0) {
           enter_debugger |= TRAP_INSTRUCTION;
-	  return 1;
+      return 1;
         }
       } else {
         if (op2 & 0x800)
@@ -2214,13 +2189,7 @@ step_instruction()
   return stop;
 }
 
-inline void
-#ifdef __FunctionProto__
-schedule(void)
-#else
-schedule()
-#endif
-{
+inline void schedule(void) {
   t1_t2_ticks		ticks;
   unsigned long		steps;
   static unsigned long	old_stat_instr;
@@ -2423,13 +2392,7 @@ schedule()
   }
 }
 
-int
-#ifdef __FunctionProto__
-emulate(void)
-#else
-emulate()
-#endif
-{
+int emulate(void) {
   struct timeval  tv;
   struct timeval  tv2;
 #ifndef SOLARIS
@@ -2457,7 +2420,7 @@ emulate()
       int i;
       for (i=0;
            i < sizeof(saturn.keybuf.rows)/sizeof(saturn.keybuf.rows[0]);
-	   i++) {
+       i++) {
         if (saturn.keybuf.rows[i] || throttle) {
 #ifdef SOLARIS
           gettimeofday(&tv);
@@ -2465,13 +2428,13 @@ emulate()
           gettimeofday(&tv, &tz);
 #endif
           while ((tv.tv_sec == tv2.tv_sec) && ((tv.tv_usec - tv2.tv_usec) < 2)) {
-	    gettimeofday(&tv, &tz);
+        gettimeofday(&tv, &tz);
           }
 
           tv2.tv_usec = tv.tv_usec;
           tv2.tv_sec = tv.tv_sec;
-	  break;
-	}
+      break;
+    }
       }
     }
 

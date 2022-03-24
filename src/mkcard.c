@@ -39,16 +39,7 @@
 
 unsigned char *mem;
 
-int
-#ifdef __FunctionProto__
-write_mem_file(char *name, unsigned char *mem, int size)
-#else
-write_mem_file(name, mem, size)
-char *name;
-unsigned char *mem;
-int size;
-#endif
-{
+int write_mem_file(char *name, unsigned char *mem, int size) {
   FILE *fp;
 
   if (NULL == (fp = fopen(name, "w")))
@@ -68,15 +59,7 @@ int size;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-main(int argc, char **argv)
-#else
-main(argc, argv)
-int argc;
-char **argv;
-#endif
-{
+int main(int argc, char **argv) {
   long size;
   char *name;
   char *asize;
@@ -127,4 +110,3 @@ char **argv;
 
   exit (0);
 }
-

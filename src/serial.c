@@ -97,13 +97,7 @@ static char *ir_name = (char *)0;
 
 /* #define DEBUG_SERIAL */
 
-void
-#ifdef __FunctionProto__
-update_connection_display(void)
-#else
-update_connection_display()
-#endif
-{
+void update_connection_display(void) {
   if (wire_fd == -1)
     {
       if (wire_name) free(wire_name);
@@ -117,13 +111,7 @@ update_connection_display()
   ShowConnections(wire_name, ir_name);
 }
 
-int
-#ifdef __FunctionProto__
-serial_init(void)
-#else
-serial_init()
-#endif
-{
+int serial_init(void) {
   char *p;
   int   c;
   int   n;
@@ -179,9 +167,9 @@ serial_init()
           grantpt(wire_fd);
           unlockpt(wire_fd);
           if (ptsname_r(wire_fd, tty_dev_name, 128)) {
-	      perror("Could not get the name of the wire device.");
-	      exit(-1);
-	  }
+          perror("Could not get the name of the wire device.");
+          exit(-1);
+      }
           if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) >= 0)
             {
               if (verbose)
@@ -192,7 +180,7 @@ serial_init()
         }
       /* BSD PTY (Legacy) */
       else
-	{
+    {
           c = 'p';
           do
             {
@@ -214,7 +202,7 @@ serial_init()
               c++;
             }
           while ((wire_fd < 0) && (errno != ENOENT));
-	}
+    }
 #else
       /*
        * Here we go for SUNOS, HPUX
@@ -300,7 +288,7 @@ serial_init()
           if (verbose)
             printf("%s: IR connection on %s\n", progname, tty_dev_name);
           ir_name = strdup(tty_dev_name);
-	}
+    }
     }
 
   if (ir_fd >= 0)
@@ -345,14 +333,7 @@ serial_init()
   return 1;
 }
 
-void
-#ifdef __FunctionProto__
-serial_baud(int baud)
-#else
-serial_baud(baud)
-int baud;
-#endif
-{
+void serial_baud(int baud) {
   int error = 0;
   struct termios ttybuf;
 
@@ -565,13 +546,7 @@ int baud;
 }
 
 
-void
-#ifdef __FunctionProto__
-transmit_char(void)
-#else
-transmit_char()
-#endif
-{
+void transmit_char(void) {
 #ifdef DEBUG_SERIALx
   fprintf(stderr, "XMT %s\n", (saturn.ir_ctrl & 0x04) ? "IR" : "wire");
 #endif
@@ -637,13 +612,7 @@ transmit_char()
 
 #define NR_BUFFER 256
 
-void
-#ifdef __FunctionProto__
-receive_char()
-#else
-receive_char()
-#endif
-{
+void receive_char() {
   struct timeval tout;
   fd_set rfds;
   int nfd;
@@ -724,4 +693,3 @@ receive_char()
     do_interupt();
   }
 }
-

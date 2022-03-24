@@ -63,13 +63,7 @@ extern int device_check;
 
 device_t device;
 
-void
-#ifdef __FunctionProto__
-check_devices(void)
-#else
-check_devices()
-#endif
-{
+void check_devices(void) {
   if (device.display_touched > 0 && device.display_touched-- == 1) {
     device.display_touched = 0;
     update_display();
@@ -186,13 +180,7 @@ check_devices()
 #include <unistd.h>
 #include <fcntl.h>
 
-void
-#ifdef __FunctionProto__
-check_out_register(void)
-#else
-check_out_register()
-#endif
-{
+void check_out_register(void) {
   static int au = -2;
   unsigned char c[] = { 0xff, 0x00 };
 

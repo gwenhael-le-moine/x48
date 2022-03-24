@@ -45,24 +45,10 @@
 
 #include "config.h"
 
-#ifdef __ProtoType__
-#undef __ProtoType__
-#endif
-
-#ifdef __FunctionProto__
-#undef __FunctionProto__
-#endif
-
-#if defined(__STDC__) || defined(__cplusplus)
 #define __ProtoType__(x) x
-#define __FunctionProto__ 1
-#else
-#define __ProtoType__(x) ()
-#undef __FunctionProto__
-#endif
 
 #if !defined(__GNUC__) || defined(__STRICT_ANSI__)
-#define inline 
+#define inline
 #if !defined(__STDC__)
 #define const
 #endif
@@ -121,7 +107,7 @@
 #else
 #define HAVE_STDIO 1
 #endif
- 
+
 #ifndef HAVE_STDIO
 #include <stdio.h>
 #include <sys/time.h>

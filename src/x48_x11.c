@@ -122,7 +122,7 @@ static int CompletionType = -1;
 extern int      saved_argc;
 extern char   **saved_argv;
 
-Display	       *dpy;
+Display        *dpy;
 int		screen;
 unsigned int	depth;
 Colormap	cmap;
@@ -673,13 +673,7 @@ icon_map_t icon_maps_gx[] = {
 #define KEYBOARD_OFFSET_X	SIDE_SKIP
 #define KEYBOARD_OFFSET_Y	(TOP_SKIP + DISPLAY_HEIGHT + DISP_KBD_SKIP)
 
-int
-#ifdef __FunctionProto__
-AllocColors(void)
-#else
-AllocColors()
-#endif
-{
+int AllocColors(void) {
   int c, error, dyn;
   int r_shift = 0, g_shift = 0, b_shift = 0;
   XSetWindowAttributes xswa;
@@ -750,7 +744,7 @@ AllocColors()
                   }
               }
             else if (colors[c].xcolor.pixel >= visual->map_entries)
-	      {
+          {
                 dyn = 0;
                 if (XAllocColor(dpy, cmap, &colors[c].xcolor) == 0)
                   {
@@ -842,7 +836,7 @@ AllocColors()
                 }
             }
           else if (colors[c].xcolor.pixel >= visual->map_entries)
-	    {
+        {
               dyn = 0;
               if (XAllocColor(dpy, cmap, &colors[c].xcolor) == 0)
                 {
@@ -868,14 +862,7 @@ AllocColors()
   return 0;
 }
 
-void
-#ifdef __FunctionProto__
-adjust_contrast(int contrast)
-#else
-adjust_contrast(contrast)
-int contrast;
-#endif
-{
+void adjust_contrast(int contrast) {
   int  gray = 0;
   int  r = 0, g = 0, b = 0;
   unsigned long old;
@@ -951,15 +938,7 @@ int contrast;
     }
 }
 
-int
-#ifdef __FunctionProto__
-merge_app_defaults(char *path, XrmDatabase *db)
-#else
-merge_app_defaults(path, db)
-char        *path;
-XrmDatabase *db;
-#endif
-{
+int merge_app_defaults(char *path, XrmDatabase *db) {
   char        file[1024];
   XrmDatabase tmp;
 
@@ -977,15 +956,7 @@ XrmDatabase *db;
   return 1;
 }
 
-int
-#ifdef __FunctionProto__
-InitDisplay(int argc, char **argv)
-#else
-InitDisplay(argc, argv)
-int    argc;
-char **argv;
-#endif
-{
+int InitDisplay(int argc, char **argv) {
   XrmDatabase    cmd = NULL, tmp = NULL;
   char          *res, *s;
   char           buf[1024], home[1024];
@@ -1216,15 +1187,7 @@ char **argv;
   return 0;
 }
 
-int
-#ifdef __FunctionProto__
-SmallTextWidth(const char *string, unsigned int length)
-#else
-SmallTextWidth(string, length)
-const char *string;
-unsigned int length;
-#endif
-{
+int SmallTextWidth(const char *string, unsigned int length) {
   int i, w;
 
   w = 0;
@@ -1240,21 +1203,8 @@ unsigned int length;
   return w;
 }
 
-int
-#ifdef __FunctionProto__
-DrawSmallString(Display *the_dpy, Drawable d, GC the_gc,
-                int x, int y, const char *string, unsigned int length)
-#else
-DrawSmallString(the_dpy, d, the_gc, x, y, string, length)
-Display *the_dpy;
-Drawable d;
-GC the_gc;
-int x;
-int y;
-const char *string;
-unsigned int length;
-#endif
-{
+int DrawSmallString(Display *the_dpy, Drawable d, GC the_gc,
+                int x, int y, const char *string, unsigned int length) {
   int i;
   Pixmap pix;
 
@@ -1262,10 +1212,10 @@ unsigned int length;
     if (small_font[(int)string[i]].h != 0) {
       pix = XCreateBitmapFromData(the_dpy, d,
                 (char *)small_font[(int)string[i]].bits,
-		small_font[(int)string[i]].w, small_font[(int)string[i]].h);
+        small_font[(int)string[i]].w, small_font[(int)string[i]].h);
       XCopyPlane(the_dpy, pix, d, the_gc, 0, 0, small_font[(int)string[i]].w,
                  small_font[(int)string[i]].h, x,
-	         (int)(y - small_font[(int)string[i]].h), 1);
+             (int)(y - small_font[(int)string[i]].h), 1);
       XFreePixmap(the_dpy, pix);
     }
     x += SmallTextWidth(&string[i], 1);
@@ -1275,15 +1225,7 @@ unsigned int length;
 
 #include <X11/cursorfont.h>
 
-void
-#ifdef __FunctionProto__
-CreateButton(int i, int off_x, int off_y, XFontStruct *f_small, XFontStruct *f_med, XFontStruct *f_big )
-#else
-CreateButton(i, off_x, off_y, f_small, f_med, f_big )
-int i, off_x, off_y;
-XFontStruct *f_small, *f_med, *f_big;
-#endif
-{
+void CreateButton(int i, int off_x, int off_y, XFontStruct *f_small, XFontStruct *f_med, XFontStruct *f_big ) {
   int x, y;
   XSetWindowAttributes xswa;
   XFontStruct *finfo;
@@ -1309,10 +1251,10 @@ XFontStruct *f_small, *f_med, *f_big;
      * create the buttons subwindows
      */
     buttons[i].xwin = XCreateSimpleWindow(dpy, mainW,
-			off_x + buttons[i].x,
-			off_y + buttons[i].y,
-			buttons[i].w, buttons[i].h, 0,
-			COLOR(BLACK), pixel);
+            off_x + buttons[i].x,
+            off_y + buttons[i].y,
+            buttons[i].w, buttons[i].h, 0,
+            COLOR(BLACK), pixel);
 
     XDefineCursor(dpy, buttons[i].xwin, XCreateFontCursor(dpy, XC_hand1));
 
@@ -1326,7 +1268,7 @@ XFontStruct *f_small, *f_med, *f_big;
      * draw the released button
      */
     buttons[i].map = XCreatePixmap(dpy, buttons[i].xwin, buttons[i].w,
-				buttons[i].h, depth);
+                buttons[i].h, depth);
 
     XSetForeground(dpy, gc, pixel);
     XFillRectangle(dpy, buttons[i].map, gc, 0, 0, buttons[i].w,
@@ -1366,7 +1308,7 @@ XFontStruct *f_small, *f_med, *f_big;
       XSetForeground(dpy, gc, COLOR(buttons[i].lc));
 
       XTextExtents(finfo, buttons[i].label, (int)strlen(buttons[i].label),
-		   &dir, &fa, &fd, &xchar);
+           &dir, &fa, &fd, &xchar);
       x = (buttons[i].w - xchar.width) / 2;
       y = (1 + buttons[i].h -
           (xchar.ascent + xchar.descent)) / 2 + xchar.ascent + 1;
@@ -1384,13 +1326,13 @@ XFontStruct *f_small, *f_med, *f_big;
       XSetForeground(dpy, gc, COLOR(buttons[i].lc));
 
       pix = XCreateBitmapFromData(dpy, buttons[i].xwin, (char *)buttons[i].lb,
-				  buttons[i].lw, buttons[i].lh);
+                  buttons[i].lw, buttons[i].lh);
 
       x = (1 + buttons[i].w - buttons[i].lw) / 2;
       y = (1 + buttons[i].h - buttons[i].lh) / 2 + 1;
 
       XCopyPlane(dpy, pix, buttons[i].map, gc, 0, 0, buttons[i].lw,
-		 buttons[i].lh, x, y, 1);
+         buttons[i].lh, x, y, 1);
 
       XFreePixmap(dpy, pix);
 
@@ -1462,7 +1404,7 @@ XFontStruct *f_small, *f_med, *f_big;
      * draw the depressed button
      */
     buttons[i].down = XCreatePixmap(dpy, buttons[i].xwin, buttons[i].w,
-				    buttons[i].h, depth);
+                    buttons[i].h, depth);
 
     XSetForeground(dpy, gc, pixel);
     XFillRectangle(dpy, buttons[i].down, gc, 0, 0, buttons[i].w,
@@ -1502,7 +1444,7 @@ XFontStruct *f_small, *f_med, *f_big;
       XSetForeground(dpy, gc, COLOR(buttons[i].lc));
 
       XTextExtents(finfo, buttons[i].label, (int)strlen(buttons[i].label),
-		   &dir, &fa, &fd, &xchar);
+           &dir, &fa, &fd, &xchar);
       x = (buttons[i].w - xchar.width) / 2;
       y = (1 + buttons[i].h -
           (xchar.ascent + xchar.descent)) / 2 + xchar.ascent;
@@ -1520,13 +1462,13 @@ XFontStruct *f_small, *f_med, *f_big;
       XSetForeground(dpy, gc, COLOR(buttons[i].lc));
 
       pix = XCreateBitmapFromData(dpy, buttons[i].xwin, (char *)buttons[i].lb,
-				  buttons[i].lw, buttons[i].lh);
+                  buttons[i].lw, buttons[i].lh);
 
       x = (1 + buttons[i].w - buttons[i].lw) / 2;
       y = (1 + buttons[i].h - buttons[i].lh) / 2;
 
       XCopyPlane(dpy, pix, buttons[i].down, gc, 0, 0, buttons[i].lw,
-		 buttons[i].lh, x, y, 1);
+         buttons[i].lh, x, y, 1);
 
       XFreePixmap(dpy, pix);
 
@@ -1612,13 +1554,7 @@ XFontStruct *f_small, *f_med, *f_big;
   return;
 }
 
-void
-#ifdef __FunctionProto__
-DrawButtons(void)
-#else
-DrawButtons()
-#endif
-{
+void DrawButtons(void) {
   int i;
 
   for (i = BUTTON_A; i <= LAST_BUTTON; i++) {
@@ -1633,14 +1569,7 @@ DrawButtons()
   return;
 }
 
-int
-#ifdef __FunctionProto__
-DrawButton(int i)
-#else
-DrawButton(i)
-int i;
-#endif
-{
+int DrawButton(int i) {
   if (buttons[i].pressed) {
     XCopyArea(dpy, buttons[i].down, buttons[i].xwin, gc, 0, 0, buttons[i].w,
               buttons[i].h, 0, 0);
@@ -1666,18 +1595,7 @@ void CreateBackground(int width, int height, int w_top, int h_top, keypad_t *key
   return;
 }
 
-void
-#ifdef __FunctionProto__
-CreateKeypad(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int offset_x, keypad_t *keypad)
-#else
-CreateKeypad(w, h, offset_y, offset_x)
-unsigned int w;
-unsigned int h;
-unsigned int offset_y;
-unsigned int offset_x;
-keypad_t *keypad;
-#endif
-{
+void CreateKeypad(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int offset_x, keypad_t *keypad) {
   int i, x, y;
   int wl, wr, ws;
   Pixmap pix;
@@ -1770,16 +1688,16 @@ keypad_t *keypad;
             ph = 11;
           }
 
-	pix = XCreatePixmap(dpy, keypad->pixmap, pw, ph, depth);
+    pix = XCreatePixmap(dpy, keypad->pixmap, pw, ph, depth);
 
         XSetForeground(dpy, gc, COLOR(UNDERLAY));
 
-	XFillRectangle(dpy, pix, gc, 0, 0, pw, ph);
+    XFillRectangle(dpy, pix, gc, 0, 0, pw, ph);
 
         XSetBackground(dpy, gc, COLOR(UNDERLAY));
-	XSetForeground(dpy, gc, COLOR(LEFT));
+    XSetForeground(dpy, gc, COLOR(LEFT));
 
-	x = (pw + 1 - SmallTextWidth(buttons[i].left,
+    x = (pw + 1 - SmallTextWidth(buttons[i].left,
                                  strlen(buttons[i].left))) / 2;
         if (opt_gx)
           y = 14;
@@ -1793,10 +1711,10 @@ keypad_t *keypad;
 
         if (!opt_gx)
           {
-	    XDrawPoint(dpy, pix, gc, 0, 0);
-	    XDrawPoint(dpy, pix, gc, 0, ph - 1);
-	    XDrawPoint(dpy, pix, gc, pw - 1, 0);
-	    XDrawPoint(dpy, pix, gc, pw - 1, ph - 1);
+        XDrawPoint(dpy, pix, gc, 0, 0);
+        XDrawPoint(dpy, pix, gc, 0, ph - 1);
+        XDrawPoint(dpy, pix, gc, pw - 1, 0);
+        XDrawPoint(dpy, pix, gc, pw - 1, ph - 1);
           }
 
         if (opt_gx)
@@ -1814,7 +1732,7 @@ keypad_t *keypad;
 
         XCopyArea(dpy, pix, keypad->pixmap, gc, 0, 0, pw, ph, x, y);
 
-	XFreePixmap(dpy, pix);
+    XFreePixmap(dpy, pix);
 
       } else {
 
@@ -1829,9 +1747,9 @@ keypad_t *keypad;
 
         } else {					/* label to the left */
 
-	  wl = SmallTextWidth(buttons[i].left, strlen(buttons[i].left));
-	  wr = SmallTextWidth(buttons[i].right, strlen(buttons[i].right));
-	  ws = SmallTextWidth(" ", 1);
+      wl = SmallTextWidth(buttons[i].left, strlen(buttons[i].left));
+      wr = SmallTextWidth(buttons[i].right, strlen(buttons[i].right));
+      ws = SmallTextWidth(" ", 1);
 
           x = offset_x + buttons[i].x + (1 + buttons[i].w -
               (wl + wr + ws)) / 2;
@@ -1878,12 +1796,12 @@ keypad_t *keypad;
 
         XSetForeground(dpy, gc, COLOR(UNDERLAY));
 
-	XFillRectangle(dpy, pix, gc, 0, 0, pw, ph);
+    XFillRectangle(dpy, pix, gc, 0, 0, pw, ph);
 
         XSetBackground(dpy, gc, COLOR(UNDERLAY));
-	XSetForeground(dpy, gc, COLOR(RIGHT));
+    XSetForeground(dpy, gc, COLOR(RIGHT));
 
-	x = (pw + 1 - SmallTextWidth(buttons[i].right,
+    x = (pw + 1 - SmallTextWidth(buttons[i].right,
                                  strlen(buttons[i].right))) / 2;
         if (opt_gx)
           y = 14;
@@ -1897,10 +1815,10 @@ keypad_t *keypad;
 
         if (!opt_gx)
           {
-	    XDrawPoint(dpy, pix, gc, 0, 0);
-	    XDrawPoint(dpy, pix, gc, 0, ph - 1);
-	    XDrawPoint(dpy, pix, gc, pw - 1, 0);
-	    XDrawPoint(dpy, pix, gc, pw - 1, ph - 1);
+        XDrawPoint(dpy, pix, gc, 0, 0);
+        XDrawPoint(dpy, pix, gc, 0, ph - 1);
+        XDrawPoint(dpy, pix, gc, pw - 1, 0);
+        XDrawPoint(dpy, pix, gc, pw - 1, ph - 1);
           }
 
         if (opt_gx)
@@ -1918,7 +1836,7 @@ keypad_t *keypad;
 
         XCopyArea(dpy, pix, keypad->pixmap, gc, 0, 0, pw, ph, x, y);
 
-	XFreePixmap(dpy, pix);
+    XFreePixmap(dpy, pix);
 
       } else {
 
@@ -1933,9 +1851,9 @@ keypad_t *keypad;
 
         } else {				/* label to the right */
 
-	  wl = SmallTextWidth(buttons[i].left, strlen(buttons[i].left));
-	  wr = SmallTextWidth(buttons[i].right, strlen(buttons[i].right));
-	  ws = SmallTextWidth(" ", 1);
+      wl = SmallTextWidth(buttons[i].left, strlen(buttons[i].left));
+      wr = SmallTextWidth(buttons[i].right, strlen(buttons[i].right));
+      ws = SmallTextWidth(" ", 1);
 
           x = offset_x + buttons[i].x + (1 + buttons[i].w -
               (wl + wr + ws)) / 2 + wl + ws;
@@ -1960,14 +1878,14 @@ keypad_t *keypad;
       XSetForeground(dpy, gc, COLOR(WHITE));
 
       pix = XCreateBitmapFromData(dpy, keypad->pixmap, (char *)last_bits,
-			          last_width, last_height);
+                      last_width, last_height);
 
       x = offset_x + buttons[BUTTON_1].x + buttons[BUTTON_1].w +
           (buttons[BUTTON_2].x - buttons[BUTTON_1].x - buttons[BUTTON_1].w) / 2;
       y = offset_y + buttons[BUTTON_5].y + buttons[BUTTON_5].h + 2;
 
       XCopyPlane(dpy, pix, keypad->pixmap, gc, 0, 0, last_width, last_height,
-	         x, y, 1);
+             x, y, 1);
 
       XFreePixmap(dpy, pix);
     }
@@ -2000,10 +1918,10 @@ CreateBezel(unsigned int width, unsigned int height, unsigned int offset_y, unsi
               (int)(DISPLAY_OFFSET_X + display_width + i),
               (int)(DISPLAY_OFFSET_Y + display_height + 2 * i + 1));
     XDrawLine(dpy, keypad->pixmap, gc,
-	      (int)(DISPLAY_OFFSET_X + display_width + i),
-	      (int)(DISPLAY_OFFSET_Y - i),
-	      (int)(DISPLAY_OFFSET_X + display_width + i),
-	      (int)(DISPLAY_OFFSET_Y + display_height + 2 * i));
+          (int)(DISPLAY_OFFSET_X + display_width + i),
+          (int)(DISPLAY_OFFSET_Y - i),
+          (int)(DISPLAY_OFFSET_X + display_width + i),
+          (int)(DISPLAY_OFFSET_Y + display_height + 2 * i));
   }
 
   XSetForeground(dpy, gc, COLOR(DISP_PAD_BOT));
@@ -2015,10 +1933,10 @@ CreateBezel(unsigned int width, unsigned int height, unsigned int offset_y, unsi
               (int)(DISPLAY_OFFSET_X + display_width + i - 1),
               (int)(DISPLAY_OFFSET_Y - i - 1));
     XDrawLine(dpy, keypad->pixmap, gc,
-	      (int)(DISPLAY_OFFSET_X - i - 1),
-	      (int)(DISPLAY_OFFSET_Y - i - 1),
-	      (int)(DISPLAY_OFFSET_X - i - 1),
-	      (int)(DISPLAY_OFFSET_Y + display_height + 2 * i - 1));
+          (int)(DISPLAY_OFFSET_X - i - 1),
+          (int)(DISPLAY_OFFSET_Y - i - 1),
+          (int)(DISPLAY_OFFSET_X - i - 1),
+          (int)(DISPLAY_OFFSET_Y + display_height + 2 * i - 1));
   }
 
   /*
@@ -2028,59 +1946,59 @@ CreateBezel(unsigned int width, unsigned int height, unsigned int offset_y, unsi
 
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_X - DISP_FRAME + 3),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME));
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
+        (int)(DISPLAY_OFFSET_X - DISP_FRAME + 3),
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME));
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_X - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 3));
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
+        (int)(DISPLAY_OFFSET_X - DISP_FRAME),
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 3));
   XDrawPoint(dpy, keypad->pixmap, gc,
-	     (int)(DISPLAY_OFFSET_X - DISP_FRAME + 1),
-	     (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 1));
+         (int)(DISPLAY_OFFSET_X - DISP_FRAME + 1),
+         (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 1));
 
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 4),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME));
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME));
   XDrawLine(dpy, keypad->pixmap, gc,
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 3));
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME),
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 3));
   XDrawPoint(dpy, keypad->pixmap, gc,
-	     (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 2),
-	     (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 1));
+         (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 2),
+         (int)(DISPLAY_OFFSET_Y - DISP_FRAME + 1));
 
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 4),
-	    (int)(DISPLAY_OFFSET_X - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 4),
+        (int)(DISPLAY_OFFSET_X - DISP_FRAME),
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X - DISP_FRAME),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_X - DISP_FRAME + 3),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_X - DISP_FRAME + 3),
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
   XDrawPoint(dpy, keypad->pixmap, gc,
-	     (int)(DISPLAY_OFFSET_X - DISP_FRAME + 1),
-	     (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 2));
+         (int)(DISPLAY_OFFSET_X - DISP_FRAME + 1),
+         (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 2));
 
   XDrawLine(dpy, keypad->pixmap, gc,
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 4),
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 4),
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
   XDrawLine(dpy, keypad->pixmap, gc,
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 4),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
-	    (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 4),
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 1),
+        (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 1));
   XDrawPoint(dpy, keypad->pixmap, gc,
-	     (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 2),
-	     (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 2));
+         (int)(DISPLAY_OFFSET_X + display_width + DISP_FRAME - 2),
+         (int)(DISPLAY_OFFSET_Y + display_height + 2 * DISP_FRAME - 2));
 
   /*
    * simulate rounded lcd corners
@@ -2089,24 +2007,24 @@ CreateBezel(unsigned int width, unsigned int height, unsigned int offset_y, unsi
 
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X - 1),
-	    (int)(DISPLAY_OFFSET_Y + 1),
+        (int)(DISPLAY_OFFSET_Y + 1),
             (int)(DISPLAY_OFFSET_X - 1),
             (int)(DISPLAY_OFFSET_Y + display_height - 2));
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X + 1),
-	    (int)(DISPLAY_OFFSET_Y - 1),
+        (int)(DISPLAY_OFFSET_Y - 1),
             (int)(DISPLAY_OFFSET_X + display_width - 2),
             (int)(DISPLAY_OFFSET_Y - 1));
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X + 1),
-	    (int)(DISPLAY_OFFSET_Y + display_height),
-	    (int)(DISPLAY_OFFSET_X + display_width - 2),
-	    (int)(DISPLAY_OFFSET_Y + display_height));
+        (int)(DISPLAY_OFFSET_Y + display_height),
+        (int)(DISPLAY_OFFSET_X + display_width - 2),
+        (int)(DISPLAY_OFFSET_Y + display_height));
   XDrawLine(dpy, keypad->pixmap, gc,
             (int)(DISPLAY_OFFSET_X + display_width),
-	    (int)(DISPLAY_OFFSET_Y + 1),
+        (int)(DISPLAY_OFFSET_Y + 1),
             (int)(DISPLAY_OFFSET_X + display_width),
-	    (int)(DISPLAY_OFFSET_Y + display_height - 2));
+        (int)(DISPLAY_OFFSET_Y + display_height - 2));
 
   return;
 }
@@ -2128,23 +2046,23 @@ DrawMore(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int off
   /* bottom lines */
   int keypad_width = keypad->width;
   XDrawLine(dpy, keypad->pixmap, gc, 1, (int)(keypad->height - 1),
-	    (int)(keypad_width - 1), (int)(keypad->height - 1));
+        (int)(keypad_width - 1), (int)(keypad->height - 1));
   XDrawLine(dpy, keypad->pixmap, gc, 2, (int)(keypad->height - 2),
-	    (int)(keypad_width - 2), (int)(keypad->height - 2));
+        (int)(keypad_width - 2), (int)(keypad->height - 2));
 
   /* right lines */
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 1),
-	    (int)(keypad->height - 1), (int)(keypad->width - 1), cut);
+        (int)(keypad->height - 1), (int)(keypad->width - 1), cut);
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 2),
-	    (int)(keypad->height - 2), (int)(keypad->width - 2), cut);
+        (int)(keypad->height - 2), (int)(keypad->width - 2), cut);
 
   XSetForeground(dpy, gc, COLOR(DISP_PAD_TOP));
 
   /* right lines */
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 1),
-	    cut - 1, (int)(keypad->width - 1), 1);
+        cut - 1, (int)(keypad->width - 1), 1);
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 2),
-	    cut - 1, (int)(keypad->width - 2), 2);
+        cut - 1, (int)(keypad->width - 2), 2);
 
   XSetForeground(dpy, gc, COLOR(DISP_PAD_BOT));
 
@@ -2169,23 +2087,23 @@ DrawMore(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int off
 
   /* bottom lines */
   XDrawLine(dpy, keypad->pixmap, gc, 3, (int)(keypad->height - 3),
-	    (int)(keypad->width - 3), (int)(keypad->height - 3));
+        (int)(keypad->width - 3), (int)(keypad->height - 3));
   XDrawLine(dpy, keypad->pixmap, gc, 4, (int)(keypad->height - 4),
-	    (int)(keypad->width - 4), (int)(keypad->height - 4));
+        (int)(keypad->width - 4), (int)(keypad->height - 4));
 
   /* right lines */
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 3),
-	    (int)(keypad->height - 3), (int)(keypad->width - 3), cut);
+        (int)(keypad->height - 3), (int)(keypad->width - 3), cut);
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 4),
-	    (int)(keypad->height - 4), (int)(keypad->width - 4), cut);
+        (int)(keypad->height - 4), (int)(keypad->width - 4), cut);
 
   XSetForeground(dpy, gc, COLOR(DISP_PAD_TOP));
 
   /* right lines */
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 3),
-	    cut - 1, (int)(keypad->width - 3), offset_y - 24);
+        cut - 1, (int)(keypad->width - 3), offset_y - 24);
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 4),
-	    cut - 1, (int)(keypad->width - 4), offset_y - 23);
+        cut - 1, (int)(keypad->width - 4), offset_y - 23);
 
   XSetForeground(dpy, gc, COLOR(DISP_PAD_BOT));
 
@@ -2212,15 +2130,15 @@ DrawMore(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int off
 
   /* bottom lines */
   XDrawLine(dpy, keypad->pixmap, gc, 5, (int)(keypad->height - 5),
-	    (int)(keypad->width - 3), (int)(keypad->height - 5));
+        (int)(keypad->width - 3), (int)(keypad->height - 5));
   XDrawLine(dpy, keypad->pixmap, gc, 6, (int)(keypad->height - 6),
-	    (int)(keypad->width - 4), (int)(keypad->height - 6));
+        (int)(keypad->width - 4), (int)(keypad->height - 6));
 
   /* right lines */
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 5),
-	    (int)(keypad->height - 5), (int)(keypad->width - 5), cut + 1);
+        (int)(keypad->height - 5), (int)(keypad->width - 5), cut + 1);
   XDrawLine(dpy, keypad->pixmap, gc, (int)(keypad->width - 6),
-	    (int)(keypad->height - 6), (int)(keypad->width - 6), cut + 2);
+        (int)(keypad->height - 6), (int)(keypad->width - 6), cut + 2);
 
   XSetForeground(dpy, gc, COLOR(DISP_PAD_BOT));
 
@@ -2295,9 +2213,9 @@ DrawMore(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int off
       XDrawLine(dpy, keypad->pixmap, gc, (int)(DISPLAY_OFFSET_X - 1), 10,
                 (int)(DISPLAY_OFFSET_X - 1), 10 + hp_height - 1);
       XDrawLine(dpy, keypad->pixmap, gc, (int)DISPLAY_OFFSET_X, 10 + hp_height,
-	        (int)(DISPLAY_OFFSET_X + hp_width - 1), 10 + hp_height);
+            (int)(DISPLAY_OFFSET_X + hp_width - 1), 10 + hp_height);
       XDrawLine(dpy, keypad->pixmap, gc, (int)(DISPLAY_OFFSET_X + hp_width), 10,
-	        (int)(DISPLAY_OFFSET_X + hp_width), 10 + hp_height - 1);
+            (int)(DISPLAY_OFFSET_X + hp_width), 10 + hp_height - 1);
     }
 
   /*
@@ -2382,26 +2300,13 @@ DrawMore(unsigned int w, unsigned int h, unsigned int offset_y, unsigned int off
   return;
 }
 
-void
-#ifdef __FunctionProto__
-DrawKeypad(keypad_t *keypad)
-#else
-DrawKeypad()
-keypad_t *keypad;
-#endif
-{
+void DrawKeypad(keypad_t *keypad) {
   XCopyArea(dpy, keypad->pixmap, mainW, gc, 0, 0, keypad->width,
             keypad->height, 0, 0);
   return;
 }
 
-void
-#ifdef __FunctionProto__
-CreateIcon(void)
-#else
-CreateIcon()
-#endif
-{
+void CreateIcon(void) {
   XSetWindowAttributes xswa;
   XWindowAttributes    xwa;
   Pixmap               tmp_pix;
@@ -2421,8 +2326,8 @@ CreateIcon()
   if (icon_color_mode == COLOR_MODE_MONO)
     {
       tmp_pix = XCreateBitmapFromData(dpy, iconW,
-				      (char *)icon_maps[ICON_MAP].bits,
-		                      icon_maps[ICON_MAP].w,
+                      (char *)icon_maps[ICON_MAP].bits,
+                              icon_maps[ICON_MAP].w,
                                       icon_maps[ICON_MAP].h);
       XSetForeground(dpy, gc, COLOR(BLACK));
       XSetBackground(dpy, gc, COLOR(WHITE));
@@ -2436,8 +2341,8 @@ CreateIcon()
       for (p = FIRST_MAP; p <= LAST_MAP; p++)
         {
           tmp_pix = XCreateBitmapFromData(dpy, iconW,
-					  (char *)icon_maps[p].bits,
-		                          icon_maps[p].w,
+                      (char *)icon_maps[p].bits,
+                                  icon_maps[p].w,
                                           icon_maps[p].h);
           XSetStipple(dpy, gc, tmp_pix);
           XSetForeground(dpy, gc, COLOR(icon_maps[p].c));
@@ -2460,9 +2365,9 @@ CreateIcon()
    */
   XSetFillStyle(dpy, gc, FillStippled);
   icon_disp_pix = XCreateBitmapFromData(dpy, iconW,
-					(char *)icon_maps[DISP_MAP].bits,
-                                  	icon_maps[DISP_MAP].w,
-                                  	icon_maps[DISP_MAP].h);
+                    (char *)icon_maps[DISP_MAP].bits,
+                                    icon_maps[DISP_MAP].w,
+                                    icon_maps[DISP_MAP].h);
   XSetStipple(dpy, gc, icon_disp_pix);
   if (icon_color_mode == COLOR_MODE_MONO)
     XSetForeground(dpy, gc, COLOR(WHITE));
@@ -2475,9 +2380,9 @@ CreateIcon()
    * draw the 'x48' string
    */
   icon_text_pix = XCreateBitmapFromData(dpy, iconW,
-					(char *)icon_maps[ON_MAP].bits,
-                                  	icon_maps[ON_MAP].w,
-                                  	icon_maps[ON_MAP].h);
+                    (char *)icon_maps[ON_MAP].bits,
+                                    icon_maps[ON_MAP].w,
+                                    icon_maps[ON_MAP].h);
   XSetStipple(dpy, gc, icon_text_pix);
   if (icon_color_mode == COLOR_MODE_MONO)
     XSetForeground(dpy, gc, COLOR(BLACK));
@@ -2490,17 +2395,11 @@ CreateIcon()
   return;
 }
 
-void
-#ifdef __FunctionProto__
-refresh_icon(void)
-#else
-refresh_icon()
-#endif
-{
+void refresh_icon(void) {
   int icon_state;
 
   icon_state = ((display.on && !((ANN_IO & display.annunc) == ANN_IO)) ||
-	        (display.on && !((ANN_ALPHA & display.annunc) == ANN_ALPHA)));
+            (display.on && !((ANN_ALPHA & display.annunc) == ANN_ALPHA)));
   if (icon_state == last_icon_state)
     return;
 
@@ -2541,40 +2440,20 @@ refresh_icon()
     }
 }
 
-void
-#ifdef __FunctionProto__
-DrawIcon(void)
-#else
-DrawIcon()
-#endif
-{
+void DrawIcon(void) {
   XCopyArea(dpy, icon_pix, iconW, gc, 0, 0,
             hp48_icon_width, hp48_icon_height, 0, 0);
   return;
 }
 
 #ifdef HAVE_XSHM
-int
-#ifdef __FunctionProto__
-handle_xerror(Display *the_dpy, XErrorEvent *eev)
-#else
-handle_xerror(the_dpy, eev)
-Display *the_dpy;
-XErrorEvent *eev;
-#endif
-{
+int handle_xerror(Display *the_dpy, XErrorEvent *eev) {
   xerror_flag = 1;
   return 0;
 }
 #endif
 
-void
-#ifdef __FunctionProto__
-CreateDispWindow(void)
-#else
-CreateDispWindow()
-#endif
-{
+void CreateDispWindow(void) {
   XSetWindowAttributes xswa;
   XGCValues val;
   unsigned long gc_mask;
@@ -2587,9 +2466,9 @@ CreateDispWindow()
   disp.h = DISPLAY_HEIGHT;
 
   disp.win = XCreateSimpleWindow(dpy, mainW,
-			(int)DISPLAY_OFFSET_X, (int)DISPLAY_OFFSET_Y,
-			disp.w, disp.h, 0,
-			COLOR(BLACK), COLOR(LCD));
+            (int)DISPLAY_OFFSET_X, (int)DISPLAY_OFFSET_Y,
+            disp.w, disp.h, 0,
+            COLOR(BLACK), COLOR(LCD));
 
   disp.mapped = 1;
 
@@ -2767,15 +2646,7 @@ CreateDispWindow()
   return;
 }
 
-int
-#ifdef __FunctionProto__
-CreateWindows(int argc, char **argv)
-#else
-CreateWindows(argc, argv)
-int    argc;
-char **argv;
-#endif
-{
+int CreateWindows(int argc, char **argv) {
   XSizeHints	hint, ih;
   XWMHints	wmh;
   XClassHint	clh;
@@ -2802,7 +2673,7 @@ char **argv;
       colors = colors_sx;
       icon_maps = icon_maps_sx;
     }
-  
+
   if (netbook) {
       int i;
       for (i = 0; i < 6; i++) {
@@ -3097,15 +2968,7 @@ char **argv;
   return 0;
 }
 
-void
-#ifdef __FunctionProto__
-ShowConnections(char *wire, char *ir)
-#else
-ShowConnections(wire, ir)
-char *wire;
-char *ir;
-#endif
-{
+void ShowConnections(char *wire, char *ir) {
   int           x, y, w, h;
   int           conn_top;
   XFontStruct  *finfo;
@@ -3156,14 +3019,7 @@ char *ir;
   XFreeFont(dpy, finfo);
 }
 
-int
-#ifdef __FunctionProto__
-button_pressed(int b)
-#else
-button_pressed(b)
-int     b;
-#endif
-{
+int button_pressed(int b) {
   int code;
   int i, r, c;
 
@@ -3193,14 +3049,7 @@ fprintf(stderr, "bug\n");
   return 0;
 }
 
-int
-#ifdef __FunctionProto__
-button_released(int b)
-#else
-button_released(b)
-int     b;
-#endif
-{
+int button_released(int b) {
   int code;
 
   code = buttons[b].code;
@@ -3223,13 +3072,7 @@ int     b;
 }
 
 static
-int
-#ifdef __FunctionProto__
-button_release_all(void)
-#else
-button_release_all()
-#endif
-{
+int button_release_all(void) {
   int code;
   int b;
 
@@ -3244,13 +3087,13 @@ button_release_all()
   fprintf(stderr, "%d (%s) ",
           buttons[b].code, buttons[b].name);
 #endif
-	code = buttons[b].code;
+    code = buttons[b].code;
         if (code == 0x8000) {
-	  int i;
+      int i;
           for (i = 0; i < 9; i++)
             saturn.keybuf.rows[i] &= ~0x8000;
         } else {
-	  int r, c;
+      int r, c;
           r = code >> 4;
           c = 1 << (code & 0xf);
           saturn.keybuf.rows[r] &= ~c;
@@ -3265,15 +3108,7 @@ button_release_all()
   return 0;
 }
 
-int
-#ifdef __FunctionProto__
-key_event(int b, XEvent *xev)
-#else
-key_event(b, xev)
-int b;
-XEvent *xev;
-#endif
-{
+int key_event(int b, XEvent *xev) {
   int code;
   int i, r, c;
   int all_up;
@@ -3304,7 +3139,7 @@ XEvent *xev;
           if (code == 0x8000) {
             for (i = 0; i < 9; i++)
               saturn.keybuf.rows[i] &= ~0x8000;
-	    memset (&saturn.keybuf, 0, sizeof (saturn.keybuf));
+        memset (&saturn.keybuf, 0, sizeof (saturn.keybuf));
           } else {
             r = code >> 4;
             c = 1 << (code & 0xf);
@@ -3321,13 +3156,7 @@ XEvent *xev;
 }
 
 #ifdef HAVE_XSHM
-void
-#ifdef __FunctionProto__
-refresh_display(void)
-#else
-refresh_display()
-#endif
-{
+void refresh_display(void) {
   if (shm_flag) {
     if (disp.display_update & UPDATE_DISP) {
       XShmPutImage(dpy, disp.win, disp.gc, disp.disp_image, disp.offset, 0,
@@ -3343,13 +3172,7 @@ refresh_display()
 }
 #endif
 
-void
-#ifdef __FunctionProto__
-DrawDisp(void)
-#else
-DrawDisp()
-#endif
-{
+void DrawDisp(void) {
 #ifdef HAVE_XSHM
   if (shm_flag) {
     XShmPutImage(dpy, disp.win, disp.gc, disp.disp_image, disp.offset, 0,
@@ -3369,16 +3192,7 @@ DrawDisp()
   redraw_annunc();
 }
 
-void
-#ifdef __FunctionProto__
-get_geometry_string(Window win, char *s, int allow_off_screen)
-#else
-get_geometry_string(win, s, allow_off_screen)
-Window  win;
-char   *s;
-int     allow_off_screen;
-#endif
-{
+void get_geometry_string(Window win, char *s, int allow_off_screen) {
   XWindowAttributes    xwa;
   Window               root, parent, window;
   Window              *children = (Window *)0;
@@ -3430,16 +3244,10 @@ int     allow_off_screen;
           (x_s > 0) ? "+" : "-", x, (y_s > 0) ? "+" : "-", y);
 }
 
-void
-#ifdef __FunctionProto__
-save_command_line(void)
-#else
-save_command_line()
-#endif
-{
+void save_command_line(void) {
   XWindowAttributes    xwa;
   int                  wm_argc, ac;
-  char 		     **wm_argv, geom[128], icon_geom[128];
+  char           **wm_argv, geom[128], icon_geom[128];
 
   ac = wm_argc = 0;
 
@@ -3491,31 +3299,14 @@ save_command_line()
   XSetCommand(dpy, mainW, wm_argv, wm_argc);
 }
 
-void
-#ifdef __FunctionProto__
-exit_x48(int tell_x11)
-#else
-exit_x48(tell_x11)
-int tell_x11;
-#endif
-{
+void exit_x48(int tell_x11) {
   exit_emulator();
   if (tell_x11)
     XCloseDisplay(dpy);
   exit (0);
 }
 
-int
-#ifdef __FunctionProto__
-decode_key(XEvent *xev, KeySym sym, char *buf, int buflen)
-#else
-decode_key(xev, sym, buf, buflen)
-XEvent *xev;
-KeySym  sym;
-char   *buf;
-int     buflen;
-#endif
-{
+int decode_key(XEvent *xev, KeySym sym, char *buf, int buflen) {
   int wake;
 
   wake = 0;
@@ -3836,13 +3627,7 @@ int last_button = -1;
 
 extern char *get_stack(void);
 
-int
-#ifdef __FunctionProto__
-GetEvent(void)
-#else
-GetEvent()
-#endif
-{
+int GetEvent(void) {
   XEvent xev;
   XClientMessageEvent *cm;
   int i, wake, bufs = 2;
@@ -3880,583 +3665,583 @@ GetEvent()
   do
     {
       while (XPending (dpy) > 0)
-	{
+    {
 
-	  XNextEvent (dpy, &xev);
+      XNextEvent (dpy, &xev);
 
-	  switch ((int) xev.type)
-	    {
+      switch ((int) xev.type)
+        {
 
-	    case KeyPress:
+        case KeyPress:
 
-	      if (0 && release_pending)
-		{
-		  printf ("xxx release_pending\n");
-		}
-	      release_pending = 0;
-	      if ((xev.xkey.time - last_release_time) <= 1)
-		{
-		  release_pending = 0;
-		  break;
-		}
+          if (0 && release_pending)
+        {
+          printf ("xxx release_pending\n");
+        }
+          release_pending = 0;
+          if ((xev.xkey.time - last_release_time) <= 1)
+        {
+          release_pending = 0;
+          break;
+        }
 
-	      i = XLookupString (&xev.xkey, buf, bufs, &sym, NULL);
-	      wake = decode_key (&xev, sym, buf, i);
-	      first_key = 1;
-	      break;
+          i = XLookupString (&xev.xkey, buf, bufs, &sym, NULL);
+          wake = decode_key (&xev, sym, buf, i);
+          first_key = 1;
+          break;
 
-	    case KeyRelease:
+        case KeyRelease:
 
-	      i = XLookupString (&xev.xkey, buf, bufs, &sym, NULL);
-	      first_key = 0;
-	      release_pending = 1;
-	      last_release_time = xev.xkey.time;
-	      memcpy (&release_event, &xev, sizeof (XKeyEvent));
-	      break;
+          i = XLookupString (&xev.xkey, buf, bufs, &sym, NULL);
+          first_key = 0;
+          release_pending = 1;
+          last_release_time = xev.xkey.time;
+          memcpy (&release_event, &xev, sizeof (XKeyEvent));
+          break;
 
-	    case NoExpose:
+        case NoExpose:
 
-	      break;
+          break;
 
-	    case Expose:
+        case Expose:
 
-	      if (xev.xexpose.count == 0)
-		{
-		  if (xev.xexpose.window == disp.win)
-		    {
-		      DrawDisp ();
-		    }
-		  else if (xev.xexpose.window == iconW)
-		    {
-		      DrawIcon ();
-		    }
-		  else if (xev.xexpose.window == mainW)
-		    {
-		      DrawKeypad(&keypad);
-		    }
-		  else
-		    for (i = BUTTON_A; i <= LAST_BUTTON; i++)
-		      {
-			if (xev.xexpose.window == buttons[i].xwin)
-			  {
-			    DrawButton (i);
-			    break;
-			  }
-		      }
-		}
-	      break;
-	    case UnmapNotify:
+          if (xev.xexpose.count == 0)
+        {
+          if (xev.xexpose.window == disp.win)
+            {
+              DrawDisp ();
+            }
+          else if (xev.xexpose.window == iconW)
+            {
+              DrawIcon ();
+            }
+          else if (xev.xexpose.window == mainW)
+            {
+              DrawKeypad(&keypad);
+            }
+          else
+            for (i = BUTTON_A; i <= LAST_BUTTON; i++)
+              {
+            if (xev.xexpose.window == buttons[i].xwin)
+              {
+                DrawButton (i);
+                break;
+              }
+              }
+        }
+          break;
+        case UnmapNotify:
 
-	      disp.mapped = 0;
-	      break;
+          disp.mapped = 0;
+          break;
 
-	    case MapNotify:
+        case MapNotify:
 
-	      if (!disp.mapped)
-		{
-		  disp.mapped = 1;
-		  update_display ();
-		  redraw_annunc ();
-		}
-	      break;
+          if (!disp.mapped)
+        {
+          disp.mapped = 1;
+          update_display ();
+          redraw_annunc ();
+        }
+          break;
 
-	    case ButtonPress:
+        case ButtonPress:
 
-	      if (xev.xbutton.subwindow == disp.win)
-		{
-		  if (xev.xbutton.button == Button2)
-		    {
-		      if (xev.xbutton.subwindow == disp.win)
-			{
-			  int x;
-			  int flag = 0;
-			  char *paste_in = XFetchBuffer (dpy, &x, 0);
+          if (xev.xbutton.subwindow == disp.win)
+        {
+          if (xev.xbutton.button == Button2)
+            {
+              if (xev.xbutton.subwindow == disp.win)
+            {
+              int x;
+              int flag = 0;
+              char *paste_in = XFetchBuffer (dpy, &x, 0);
 
-			  char *p = paste_in;
-			  if (x > MAX_PASTE)
-			    {
-			      x = 0;
-			      printf ("input too long. limit is %d characters\n",
-				      MAX_PASTE);
-			    }
-			  paste_count = 0;
-			  paste_size = 0;
-			  while (x--)
-			    {
-			      char c = *p++;
-			      switch (c)
-				{
-				case '.':
-				  paste[paste_size++] = BUTTON_PERIOD;
-				  break;
-				case '0':
-				  paste[paste_size++] = BUTTON_0;
-				  break;
-				case '1':
-				  paste[paste_size++] = BUTTON_1;
-				  break;
-				case '2':
-				  paste[paste_size++] = BUTTON_2;
-				  break;
-				case '3':
-				  paste[paste_size++] = BUTTON_3;
-				  break;
-				case '4':
-				  paste[paste_size++] = BUTTON_4;
-				  break;
-				case '5':
-				  paste[paste_size++] = BUTTON_5;
-				  break;
-				case '6':
-				  paste[paste_size++] = BUTTON_6;
-				  break;
-				case '7':
-				  paste[paste_size++] = BUTTON_7;
-				  break;
-				case '8':
-				  paste[paste_size++] = BUTTON_8;
-				  break;
-				case '9':
-				  paste[paste_size++] = BUTTON_9;
-				  break;
-				case '\n':
-				  paste[paste_size++] = BUTTON_SHR;
-				  paste[paste_size++] = BUTTON_PERIOD;
-				  break;
-				case '!':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_DEL;
-				  break;
-				case '+':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  paste[paste_size++] = BUTTON_PLUS;
-				  break;
-				case '-':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  paste[paste_size++] = BUTTON_MINUS;
-				  break;
-				case '*':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  paste[paste_size++] = BUTTON_MUL;
-				  break;
-				case '/':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  paste[paste_size++] = BUTTON_DIV;
-				  break;
-				case ' ':
-				  paste[paste_size++] = 47;
-				  break;
-				case '(':
-				  paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_DIV;
-				  break;
-				case '[':
-				  paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_MUL;
-				  break;
-				case '<':
-				  if (x > 1 && *p == '<')
-				    {
-				      paste[paste_size++] = BUTTON_SHL;
-				      paste[paste_size++] = BUTTON_MINUS;
-				      x--;
-				      p++;
-				    }
-				  else
-				    {
-				      paste[paste_size++] = BUTTON_ALPHA;
-				      paste[paste_size++] = BUTTON_SHL;
-				      paste[paste_size++] = BUTTON_2;
-				    }
-				  break;
-				case '{':
-				  paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_PLUS;
-				  break;
-				case ')':
-				case ']':
-				case '}':
-				  paste[paste_size++] = BUTTON_RIGHT;
-				  break;
-				case '>':
-				  if (x > 1 && *p == '>')
-				    {
-				      paste[paste_size++] = BUTTON_RIGHT;
-				      paste[paste_size++] = BUTTON_RIGHT;
-				      paste[paste_size++] = BUTTON_RIGHT;
-				      x--;
-				      p++;
-				    }
-				  else
-				    {
-				      paste[paste_size++] = BUTTON_ALPHA;
-				      paste[paste_size++] = BUTTON_SHR;
-				      paste[paste_size++] = BUTTON_2;
-				    }
-				  break;
-				case '#':
-				  paste[paste_size++] = BUTTON_SHR;
-				  paste[paste_size++] = BUTTON_DIV;
-				  break;
-				case '_':
-				  paste[paste_size++] = BUTTON_SHR;
-				  paste[paste_size++] = BUTTON_MUL;
-				  break;
-				case '"':
-				  if (flag & 1)
-				    {
-				      flag &= ~1;
-				      paste[paste_size++] = BUTTON_RIGHT;
-				    }
-				  else
-				    {
-				      flag |= 1;
-				      paste[paste_size++] = BUTTON_SHR;
-				      paste[paste_size++] = BUTTON_MINUS;
-				    }
-				  break;
-				case ':':
-				  if (flag & 2)
-				    {
-				      flag &= ~2;
-				      paste[paste_size++] = BUTTON_RIGHT;
-				    }
-				  else
-				    {
-				      flag |= 2;
-				      paste[paste_size++] = BUTTON_SHR;
-				      paste[paste_size++] = BUTTON_PLUS;
-				    }
-				  break;
-				case '\'':
-				  if (flag & 4)
-				    {
-				      flag &= ~4;
-				      paste[paste_size++] = BUTTON_RIGHT;
-				    }
-				  else
-				    {
-				      flag |= 4;
-				      paste[paste_size++] = BUTTON_COLON;
-				    }
-				  break;
-				case 'a':
-				case 'A':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_A;
-				  break;
-				case 'b':
-				case 'B':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_B;
-				  break;
-				case 'c':
-				case 'C':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_C;
-				  break;
-				case 'd':
-				case 'D':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_D;
-				  break;
-				case 'e':
-				case 'E':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_E;
-				  break;
-				case 'f':
-				case 'F':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_F;
-				  break;
-				case 'g':
-				case 'G':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_MTH;
-				  break;
-				case 'h':
-				case 'H':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_PRG;
-				  break;
-				case 'i':
-				case 'I':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_CST;
-				  break;
-				case 'j':
-				case 'J':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_VAR;
-				  break;
-				case 'k':
-				case 'K':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_UP;
-				  break;
-				case 'l':
-				case 'L':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_NXT;
-				  break;
-
-				case 'm':
-				case 'M':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_COLON;
-				  break;
-				case 'n':
-				case 'N':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_STO;
-				  break;
-				case 'o':
-				case 'O':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_EVAL;
-				  break;
-				case 'p':
-				case 'P':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_LEFT;
-				  break;
-				case 'q':
-				case 'Q':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_DOWN;
-				  break;
-				case 'r':
-				case 'R':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_RIGHT;
-				  break;
-				case 's':
-				case 'S':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_SIN;
-				  break;
-				case 't':
-				case 'T':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_COS;
-				  break;
-				case 'u':
-				case 'U':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_TAN;
-				  break;
-				case 'v':
-				case 'V':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_SQRT;
-				  break;
-				case 'w':
-				case 'W':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_POWER;
-				  break;
-				case 'x':
-				case 'X':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_INV;
-				  break;
-				case 'y':
-				case 'Y':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_NEG;
-				  break;
-				case 'z':
-				case 'Z':
-				  paste[paste_size++] = BUTTON_ALPHA;
-				  if (islower (c))
-				    paste[paste_size++] = BUTTON_SHL;
-				  paste[paste_size++] = BUTTON_EEX;
-				  break;
-				default:
-				  printf ("unknown %c %d\n", c, *p);
-				  break;
-				}
-			    }
-			  if (paste_in)
-			    XFree (paste_in);
-			  if (paste_size)
-			    {
-			      return 1;
-			    }
-			}
-		    }
-		  else if (xev.xbutton.button == Button3)
-		    {
-	                    /* TODO Make cut from the screen work. */
-			    get_stack();
-	            }
-		  else
-		    {
-/* printf("In display %d\n", xev.xbutton.button); */
-		    }
-		}
-              else
-	        {
-		  if (xev.xbutton.button == Button1
-		      || xev.xbutton.button == Button2
-		      || xev.xbutton.button == Button3
-		     )
-		    {
-		      for (i = BUTTON_A; i <= LAST_BUTTON; i++)
-			{
-			  if (xev.xbutton.subwindow == buttons[i].xwin)
-			    {
-			      if (buttons[i].pressed)
-				{
-				  if (xev.xbutton.button == Button3
-				     )
-				    {
-				      button_released (i);
-				      DrawButton (i);
-				    }
-				}
-			      else
-				{
-				  last_button = i;
-				  button_pressed (i);
-				  wake = 1;
-				  first_key = 1;
-				  DrawButton (i);
-				}
-			      break;
-			    }
-			}
-		    }
+              char *p = paste_in;
+              if (x > MAX_PASTE)
+                {
+                  x = 0;
+                  printf ("input too long. limit is %d characters\n",
+                      MAX_PASTE);
                 }
-	      break;
+              paste_count = 0;
+              paste_size = 0;
+              while (x--)
+                {
+                  char c = *p++;
+                  switch (c)
+                {
+                case '.':
+                  paste[paste_size++] = BUTTON_PERIOD;
+                  break;
+                case '0':
+                  paste[paste_size++] = BUTTON_0;
+                  break;
+                case '1':
+                  paste[paste_size++] = BUTTON_1;
+                  break;
+                case '2':
+                  paste[paste_size++] = BUTTON_2;
+                  break;
+                case '3':
+                  paste[paste_size++] = BUTTON_3;
+                  break;
+                case '4':
+                  paste[paste_size++] = BUTTON_4;
+                  break;
+                case '5':
+                  paste[paste_size++] = BUTTON_5;
+                  break;
+                case '6':
+                  paste[paste_size++] = BUTTON_6;
+                  break;
+                case '7':
+                  paste[paste_size++] = BUTTON_7;
+                  break;
+                case '8':
+                  paste[paste_size++] = BUTTON_8;
+                  break;
+                case '9':
+                  paste[paste_size++] = BUTTON_9;
+                  break;
+                case '\n':
+                  paste[paste_size++] = BUTTON_SHR;
+                  paste[paste_size++] = BUTTON_PERIOD;
+                  break;
+                case '!':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_DEL;
+                  break;
+                case '+':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  paste[paste_size++] = BUTTON_PLUS;
+                  break;
+                case '-':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  paste[paste_size++] = BUTTON_MINUS;
+                  break;
+                case '*':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  paste[paste_size++] = BUTTON_MUL;
+                  break;
+                case '/':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  paste[paste_size++] = BUTTON_DIV;
+                  break;
+                case ' ':
+                  paste[paste_size++] = 47;
+                  break;
+                case '(':
+                  paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_DIV;
+                  break;
+                case '[':
+                  paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_MUL;
+                  break;
+                case '<':
+                  if (x > 1 && *p == '<')
+                    {
+                      paste[paste_size++] = BUTTON_SHL;
+                      paste[paste_size++] = BUTTON_MINUS;
+                      x--;
+                      p++;
+                    }
+                  else
+                    {
+                      paste[paste_size++] = BUTTON_ALPHA;
+                      paste[paste_size++] = BUTTON_SHL;
+                      paste[paste_size++] = BUTTON_2;
+                    }
+                  break;
+                case '{':
+                  paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_PLUS;
+                  break;
+                case ')':
+                case ']':
+                case '}':
+                  paste[paste_size++] = BUTTON_RIGHT;
+                  break;
+                case '>':
+                  if (x > 1 && *p == '>')
+                    {
+                      paste[paste_size++] = BUTTON_RIGHT;
+                      paste[paste_size++] = BUTTON_RIGHT;
+                      paste[paste_size++] = BUTTON_RIGHT;
+                      x--;
+                      p++;
+                    }
+                  else
+                    {
+                      paste[paste_size++] = BUTTON_ALPHA;
+                      paste[paste_size++] = BUTTON_SHR;
+                      paste[paste_size++] = BUTTON_2;
+                    }
+                  break;
+                case '#':
+                  paste[paste_size++] = BUTTON_SHR;
+                  paste[paste_size++] = BUTTON_DIV;
+                  break;
+                case '_':
+                  paste[paste_size++] = BUTTON_SHR;
+                  paste[paste_size++] = BUTTON_MUL;
+                  break;
+                case '"':
+                  if (flag & 1)
+                    {
+                      flag &= ~1;
+                      paste[paste_size++] = BUTTON_RIGHT;
+                    }
+                  else
+                    {
+                      flag |= 1;
+                      paste[paste_size++] = BUTTON_SHR;
+                      paste[paste_size++] = BUTTON_MINUS;
+                    }
+                  break;
+                case ':':
+                  if (flag & 2)
+                    {
+                      flag &= ~2;
+                      paste[paste_size++] = BUTTON_RIGHT;
+                    }
+                  else
+                    {
+                      flag |= 2;
+                      paste[paste_size++] = BUTTON_SHR;
+                      paste[paste_size++] = BUTTON_PLUS;
+                    }
+                  break;
+                case '\'':
+                  if (flag & 4)
+                    {
+                      flag &= ~4;
+                      paste[paste_size++] = BUTTON_RIGHT;
+                    }
+                  else
+                    {
+                      flag |= 4;
+                      paste[paste_size++] = BUTTON_COLON;
+                    }
+                  break;
+                case 'a':
+                case 'A':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_A;
+                  break;
+                case 'b':
+                case 'B':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_B;
+                  break;
+                case 'c':
+                case 'C':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_C;
+                  break;
+                case 'd':
+                case 'D':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_D;
+                  break;
+                case 'e':
+                case 'E':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_E;
+                  break;
+                case 'f':
+                case 'F':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_F;
+                  break;
+                case 'g':
+                case 'G':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_MTH;
+                  break;
+                case 'h':
+                case 'H':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_PRG;
+                  break;
+                case 'i':
+                case 'I':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_CST;
+                  break;
+                case 'j':
+                case 'J':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_VAR;
+                  break;
+                case 'k':
+                case 'K':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_UP;
+                  break;
+                case 'l':
+                case 'L':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_NXT;
+                  break;
 
-	    case ButtonRelease:
+                case 'm':
+                case 'M':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_COLON;
+                  break;
+                case 'n':
+                case 'N':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_STO;
+                  break;
+                case 'o':
+                case 'O':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_EVAL;
+                  break;
+                case 'p':
+                case 'P':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_LEFT;
+                  break;
+                case 'q':
+                case 'Q':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_DOWN;
+                  break;
+                case 'r':
+                case 'R':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_RIGHT;
+                  break;
+                case 's':
+                case 'S':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_SIN;
+                  break;
+                case 't':
+                case 'T':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_COS;
+                  break;
+                case 'u':
+                case 'U':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_TAN;
+                  break;
+                case 'v':
+                case 'V':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_SQRT;
+                  break;
+                case 'w':
+                case 'W':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_POWER;
+                  break;
+                case 'x':
+                case 'X':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_INV;
+                  break;
+                case 'y':
+                case 'Y':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_NEG;
+                  break;
+                case 'z':
+                case 'Z':
+                  paste[paste_size++] = BUTTON_ALPHA;
+                  if (islower (c))
+                    paste[paste_size++] = BUTTON_SHL;
+                  paste[paste_size++] = BUTTON_EEX;
+                  break;
+                default:
+                  printf ("unknown %c %d\n", c, *p);
+                  break;
+                }
+                }
+              if (paste_in)
+                XFree (paste_in);
+              if (paste_size)
+                {
+                  return 1;
+                }
+            }
+            }
+          else if (xev.xbutton.button == Button3)
+            {
+                        /* TODO Make cut from the screen work. */
+                get_stack();
+                }
+          else
+            {
+/* printf("In display %d\n", xev.xbutton.button); */
+            }
+        }
+              else
+            {
+          if (xev.xbutton.button == Button1
+              || xev.xbutton.button == Button2
+              || xev.xbutton.button == Button3
+             )
+            {
+              for (i = BUTTON_A; i <= LAST_BUTTON; i++)
+            {
+              if (xev.xbutton.subwindow == buttons[i].xwin)
+                {
+                  if (buttons[i].pressed)
+                {
+                  if (xev.xbutton.button == Button3
+                     )
+                    {
+                      button_released (i);
+                      DrawButton (i);
+                    }
+                }
+                  else
+                {
+                  last_button = i;
+                  button_pressed (i);
+                  wake = 1;
+                  first_key = 1;
+                  DrawButton (i);
+                }
+                  break;
+                }
+            }
+            }
+                }
+          break;
 
-	      first_key = 0;
-	      if (xev.xbutton.button == Button1)
-		{
-		  button_release_all ();
-		}
-	      if (xev.xbutton.button == Button2)
-		{
-		  if (last_button >= 0)
-		    {
-		      button_released (last_button);
-		      DrawButton (last_button);
-		    }
-		    last_button = -1;
-		}
-	      break;
+        case ButtonRelease:
 
-	    case FocusOut:
-	      first_key = 0;
-	      button_release_all();
-	      break;
+          first_key = 0;
+          if (xev.xbutton.button == Button1)
+        {
+          button_release_all ();
+        }
+          if (xev.xbutton.button == Button2)
+        {
+          if (last_button >= 0)
+            {
+              button_released (last_button);
+              DrawButton (last_button);
+            }
+            last_button = -1;
+        }
+          break;
 
-	    case MappingNotify:
+        case FocusOut:
+          first_key = 0;
+          button_release_all();
+          break;
 
-	      switch (xev.xmapping.request)
-		{
-		case MappingModifier:
-		case MappingKeyboard:
-		  XRefreshKeyboardMapping (&xev.xmapping);
-		  break;
-		case MappingPointer:
-		default:
-		  break;
-		}
-	      break;
+        case MappingNotify:
 
-	    case EnterNotify:
-	    case LeaveNotify:
+          switch (xev.xmapping.request)
+        {
+        case MappingModifier:
+        case MappingKeyboard:
+          XRefreshKeyboardMapping (&xev.xmapping);
+          break;
+        case MappingPointer:
+        default:
+          break;
+        }
+          break;
 
-	      break;
+        case EnterNotify:
+        case LeaveNotify:
 
-	    case ClientMessage:
+          break;
 
-	      cm = (XClientMessageEvent *) & xev;
+        case ClientMessage:
 
-	      if (cm->message_type == wm_protocols)
-		{
-		  if (cm->data.l[0] == wm_delete_window)
-		    {
-		      /*
-		       * Quit selected from window managers menu
-		       */
-		      exit_x48 (1);
-		    }
+          cm = (XClientMessageEvent *) & xev;
 
-		  if (cm->data.l[0] == wm_save_yourself)
-		    {
-		      save_command_line ();
-		    }
-		}
-	      break;
+          if (cm->message_type == wm_protocols)
+        {
+          if (cm->data.l[0] == wm_delete_window)
+            {
+              /*
+               * Quit selected from window managers menu
+               */
+              exit_x48 (1);
+            }
 
-	    default:
+          if (cm->data.l[0] == wm_save_yourself)
+            {
+              save_command_line ();
+            }
+        }
+          break;
+
+        default:
 
 #ifdef DEBUG_XEVENT
-	      printf ("Event: %d\n", xev.type);
+          printf ("Event: %d\n", xev.type);
 #endif
-	    case KeymapNotify:
-	    case ConfigureNotify:
-	    case ReparentNotify:
-	      break;
+        case KeymapNotify:
+        case ConfigureNotify:
+        case ReparentNotify:
+          break;
 
-	    }
-	}
+        }
+    }
     }
   while (first_key > 1);
   if (first_key)

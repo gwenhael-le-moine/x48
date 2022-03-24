@@ -128,27 +128,12 @@ int	(*read_nibble_crc) __ProtoType__((long addr));
 
 static int line_counter = -1;
 
-static inline int
-#ifdef __FunctionProto__
-calc_crc(int nib)
-#else
-calc_crc(nib)
-int nib;
-#endif
-{
+static inline int calc_crc(int nib) {
   saturn.crc = (saturn.crc >> 4) ^ (((saturn.crc ^ nib) & 0xf) * 0x1081);
   return nib;
 }
 
-void
-#ifdef __FunctionProto__
-write_dev_mem(long addr, int val)
-#else
-write_dev_mem(addr, val)
-long addr;
-int val;
-#endif
-{
+void write_dev_mem(long addr, int val) {
   static int old_line_offset = -1;
 
   device_check = 1;
@@ -167,7 +152,7 @@ int val;
           display.nibs_per_line =
                   (NIBBLES_PER_ROW+saturn.line_offset) & 0xfff;
         display.disp_end = display.disp_start +
-		           (display.nibs_per_line * (display.lines + 1));
+                   (display.nibs_per_line * (display.lines + 1));
         device.display_touched = DISP_INSTR_OFF;
       }
 #ifdef DEBUG_DISPLAY
@@ -231,9 +216,9 @@ int val;
     case 0x10e:						/* CARD CONTROL */
       saturn.card_ctrl = val;
       if (saturn.card_ctrl & 0x02)
-	saturn.MP = 1;
+    saturn.MP = 1;
       if (saturn.card_ctrl & 0x01)
-	do_interupt();
+    do_interupt();
       device.card_ctrl_touched = 1;
 #ifdef DEBUG_CARDS
       fprintf(stderr, "%.5lx: CardControl write: %x\n",
@@ -331,7 +316,7 @@ int val;
       if (display.disp_start != (saturn.disp_addr & 0xffffe)) {
         display.disp_start = saturn.disp_addr & 0xffffe;
         display.disp_end = display.disp_start +
-		           (display.nibs_per_line * (display.lines + 1));
+                   (display.nibs_per_line * (display.lines + 1));
         device.display_touched = DISP_INSTR_OFF;
       }
 #ifdef DEBUG_DISPLAY
@@ -351,7 +336,7 @@ int val;
           display.nibs_per_line =
                   (NIBBLES_PER_ROW+saturn.line_offset) & 0xfff;
         display.disp_end = display.disp_start +
-		           (display.nibs_per_line * (display.lines + 1));
+                   (display.nibs_per_line * (display.lines + 1));
         device.display_touched = DISP_INSTR_OFF;
       }
 #ifdef DEBUG_DISPLAY
@@ -366,11 +351,11 @@ int val;
       line_counter = -1;
       if (display.lines != (saturn.line_count & 0x3f)) {
         display.lines = saturn.line_count & 0x3f;
-	if (display.lines == 0)
+    if (display.lines == 0)
           display.lines = 63;
         disp.lines = 2 * display.lines;
         display.disp_end = display.disp_start +
-		           (display.nibs_per_line * (display.lines + 1));
+                   (display.nibs_per_line * (display.lines + 1));
         device.display_touched = DISP_INSTR_OFF;
       }
 #ifdef DEBUG_DISPLAY
@@ -381,7 +366,7 @@ int val;
     case 0x12a: case 0x12b: case 0x12c: case 0x12d:	/* Dont know yet */
       saturn.unknown &= ~nibble_masks[addr - 0x12a];
       saturn.unknown |= val << ((addr - 0x12a) * 4);
-#ifdef DEBUG_UNKNOWN 
+#ifdef DEBUG_UNKNOWN
       fprintf(stderr, "Unknown device @0x%ld: %.4x\n", addr, saturn.unknown);
 #endif
       device.unknown_touched = 1;
@@ -407,7 +392,7 @@ int val;
     case 0x135: case 0x136:				/* Dont know yet 2 */
       saturn.unknown2 &= ~nibble_masks[addr - 0x135];
       saturn.unknown2 |= val << ((addr - 0x135) * 4);
-#ifdef DEBUG_UNKNOWN 
+#ifdef DEBUG_UNKNOWN
       fprintf(stderr, "Unknown device @0x%ld: %.2x\n", addr, saturn.unknown2);
 #endif
       device.unknown2_touched = 1;
@@ -430,14 +415,7 @@ int val;
   }
 }
 
-int
-#ifdef __FunctionProto__
-read_dev_mem(long addr)
-#else
-read_dev_mem(addr)
-long addr;
-#endif
-{
+int read_dev_mem(long addr) {
   switch ((int)addr) {
     case 0x100:						/* DISPLAY IO */
       return saturn.disp_io & 0x0f;
@@ -554,15 +532,7 @@ long addr;
   }
 }
 
-void
-#ifdef __FunctionProto__
-write_nibble_sx(long addr, int val)
-#else
-write_nibble_sx(addr, val)
-long addr;
-int val;
-#endif
-{
+void write_nibble_sx(long addr, int val) {
   addr &= 0xfffff;
   val &= 0x0f;
   switch ((int)(addr >> 16) & 0x0f) {
@@ -684,15 +654,7 @@ int val;
     }
 }
 
-void
-#ifdef __FunctionProto__
-write_nibble_gx(long addr, int val)
-#else
-write_nibble_gx(addr, val)
-long addr;
-int val;
-#endif
-{
+void write_nibble_gx(long addr, int val) {
   addr &= 0xfffff;
   val &= 0x0f;
   switch ((int)(addr >> 16) & 0x0f)
@@ -953,14 +915,7 @@ int val;
   return;
 }
 
-int
-#ifdef __FunctionProto__
-read_nibble_sx(long addr)
-#else
-read_nibble_sx(addr)
-long addr;
-#endif
-{
+int read_nibble_sx(long addr) {
   addr &= 0xfffff;
   switch ((int)(addr >> 16) & 0x0f) {
     case 0:
@@ -1023,14 +978,7 @@ long addr;
   return 0x00;
 }
 
-int
-#ifdef __FunctionProto__
-read_nibble_gx(long addr)
-#else
-read_nibble_gx(addr)
-long addr;
-#endif
-{
+int read_nibble_gx(long addr) {
   addr &= 0xfffff;
   switch ((int)(addr >> 16) & 0x0f)
     {
@@ -1215,14 +1163,7 @@ long addr;
   return 0x00;
 }
 
-int
-#ifdef __FunctionProto__
-read_nibble_crc_sx(long addr)
-#else
-read_nibble_crc_sx(addr)
-long addr;
-#endif
-{
+int read_nibble_crc_sx(long addr) {
   addr &= 0xfffff;
   switch ((int)(addr >> 16) & 0x0f) {
     case 0:
@@ -1285,14 +1226,7 @@ long addr;
   return 0x00;
 }
 
-int
-#ifdef __FunctionProto__
-read_nibble_crc_gx(long addr)
-#else
-read_nibble_crc_gx(addr)
-long addr;
-#endif
-{
+int read_nibble_crc_gx(long addr) {
   addr &= 0xfffff;
   switch ((int)(addr >> 16) & 0x0f)
     {
@@ -1477,15 +1411,7 @@ long addr;
   return 0x00;
 }
 
-long
-#ifdef __FunctionProto__
-read_nibbles(long addr, int len)
-#else
-read_nibbles(addr, len)
-long addr;
-int len;
-#endif
-{
+long read_nibbles(long addr, int len) {
   long val = 0;
 
   addr += len;
@@ -1495,29 +1421,14 @@ int len;
   return val;
 }
 
-void
-#ifdef __FunctionProto__
-write_nibbles(long addr, long val, int len)
-#else
-write_nibbles(addr, val, len)
-long addr;
-long val;
-int len;
-#endif
-{
+void write_nibbles(long addr, long val, int len) {
   while (len-- > 0) {
     write_nibble(addr++, val);
     val >>= 4;
   }
 }
 
-void
-#ifdef __FunctionProto__
-dev_memory_init(void)
-#else
-dev_memory_init()
-#endif
-{
+void dev_memory_init(void) {
   if (opt_gx)
     {
       read_nibble = read_nibble_gx;
@@ -1532,4 +1443,3 @@ dev_memory_init()
     }
   memset(&device, 0, sizeof(device));
 }
-
