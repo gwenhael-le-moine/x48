@@ -60,28 +60,27 @@
  * $Id: serial.c,v 1.11 1995/01/11 18:20:01 ecd Exp ecd $
  */
 
-
 #include "global.h"
 
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <sys/time.h>
 #if defined(HPUX) || defined(CSRG_BASED)
-#  include <sys/ioctl.h>
+#include <sys/ioctl.h>
 #endif
-#include <unistd.h>
 #include <termios.h>
+#include <unistd.h>
 #ifdef SOLARIS
-#  include <sys/stream.h>
-#  include <sys/stropts.h>
-#  include <sys/termios.h>
+#include <sys/stream.h>
+#include <sys/stropts.h>
+#include <sys/termios.h>
 #endif
 
-#include "hp48.h"
 #include "device.h"
+#include "hp48.h"
 #include "hp48_emu.h"
 #include "resources.h"
 #include "x48_x11.h"
@@ -98,161 +97,133 @@ static char *ir_name = (char *)0;
 /* #define DEBUG_SERIAL */
 
 void update_connection_display(void) {
-  if (wire_fd == -1)
-    {
-      if (wire_name) free(wire_name);
-      wire_name = (char *)0;
-    }
-  if (ir_fd == -1)
-    {
-      if (ir_name) free(ir_name);
-      ir_name = (char *)0;
-    }
+  if (wire_fd == -1) {
+    if (wire_name)
+      free(wire_name);
+    wire_name = (char *)0;
+  }
+  if (ir_fd == -1) {
+    if (ir_name)
+      free(ir_name);
+    ir_name = (char *)0;
+  }
   ShowConnections(wire_name, ir_name);
 }
 
 int serial_init(void) {
   char *p;
-  int   c;
-  int   n;
-  char  tty_dev_name[128];
+  int c;
+  int n;
+  char tty_dev_name[128];
   struct termios ttybuf;
 
   wire_fd = -1;
   ttyp = -1;
-  if (useTerminal)
-    {
+  if (useTerminal) {
 #if defined(IRIX)
-      if ((p = _getpty(&wire_fd, O_RDWR | O_EXCL | O_NDELAY, 0666, 0)) == NULL)
-        {
-          wire_fd = -1;
-          ttyp = -1;
-        }
-      else
-        {
-          if ((ttyp = open(p, O_RDWR | O_NDELAY, 0666)) < 0)
-            {
-              close(wire_fd);
-              wire_fd = -1;
-              ttyp = -1;
-            }
-          else
-            {
-              if (verbose)
-                printf("%s: wire connection on %s\n", progname, p);
-              wire_name = strdup(p);
-            }
-        }
-#elif defined(SOLARIS)
-      if ((wire_fd = open("/dev/ptmx", O_RDWR | O_NONBLOCK, 0666)) >= 0)
-        {
-          grantpt(wire_fd);
-          unlockpt(wire_fd);
-          p = ptsname(wire_fd);
-          strcpy(tty_dev_name, p);
-          if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) >= 0)
-            {
-              ioctl(ttyp, I_PUSH, "ptem");
-              ioctl(ttyp, I_PUSH, "ldterm");
-              if (verbose)
-                printf("%s: wire connection on %s\n", progname,
-                      tty_dev_name);
-              wire_name = strdup(tty_dev_name);
-            }
-        }
-#elif defined(LINUX)
-      /* Unix98 PTY (Preferred) */
-      if ((wire_fd = open("/dev/ptmx", O_RDWR | O_NONBLOCK, 0666)) >= 0)
-        {
-          grantpt(wire_fd);
-          unlockpt(wire_fd);
-          if (ptsname_r(wire_fd, tty_dev_name, 128)) {
-          perror("Could not get the name of the wire device.");
-          exit(-1);
+    if ((p = _getpty(&wire_fd, O_RDWR | O_EXCL | O_NDELAY, 0666, 0)) == NULL) {
+      wire_fd = -1;
+      ttyp = -1;
+    } else {
+      if ((ttyp = open(p, O_RDWR | O_NDELAY, 0666)) < 0) {
+        close(wire_fd);
+        wire_fd = -1;
+        ttyp = -1;
+      } else {
+        if (verbose)
+          printf("%s: wire connection on %s\n", progname, p);
+        wire_name = strdup(p);
       }
-          if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) >= 0)
-            {
-              if (verbose)
-                printf("%s: wire connection on %s\n", progname,
-                      tty_dev_name);
-              wire_name = strdup(tty_dev_name);
-            }
-        }
-      /* BSD PTY (Legacy) */
-      else
-    {
-          c = 'p';
-          do
-            {
-              for (n = 0; n < 16; n++)
-                {
-                  sprintf(tty_dev_name, "/dev/pty%c%x", c, n);
-                  if ((wire_fd = open(tty_dev_name,
-                                      O_RDWR | O_EXCL | O_NDELAY, 0666)) >= 0)
-                    {
-                      ttyp = wire_fd;
-                      sprintf(tty_dev_name, "/dev/tty%c%x", c, n);
-                      if (verbose)
-                        printf("%s: wire connection on %s\n", progname,
-                               tty_dev_name);
-                      wire_name = strdup(tty_dev_name);
-                      break;
-                    }
-                }
-              c++;
-            }
-          while ((wire_fd < 0) && (errno != ENOENT));
     }
-#else
-      /*
-       * Here we go for SUNOS, HPUX
-       */
+#elif defined(SOLARIS)
+    if ((wire_fd = open("/dev/ptmx", O_RDWR | O_NONBLOCK, 0666)) >= 0) {
+      grantpt(wire_fd);
+      unlockpt(wire_fd);
+      p = ptsname(wire_fd);
+      strcpy(tty_dev_name, p);
+      if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) >= 0) {
+        ioctl(ttyp, I_PUSH, "ptem");
+        ioctl(ttyp, I_PUSH, "ldterm");
+        if (verbose)
+          printf("%s: wire connection on %s\n", progname, tty_dev_name);
+        wire_name = strdup(tty_dev_name);
+      }
+    }
+#elif defined(LINUX)
+    /* Unix98 PTY (Preferred) */
+    if ((wire_fd = open("/dev/ptmx", O_RDWR | O_NONBLOCK, 0666)) >= 0) {
+      grantpt(wire_fd);
+      unlockpt(wire_fd);
+      if (ptsname_r(wire_fd, tty_dev_name, 128)) {
+        perror("Could not get the name of the wire device.");
+        exit(-1);
+      }
+      if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) >= 0) {
+        if (verbose)
+          printf("%s: wire connection on %s\n", progname, tty_dev_name);
+        wire_name = strdup(tty_dev_name);
+      }
+    }
+    /* BSD PTY (Legacy) */
+    else {
       c = 'p';
-      do
-        {
-          for (n = 0; n < 16; n++)
-            {
-              sprintf(tty_dev_name, "/dev/ptyp%x", n);
-              if ((wire_fd = open(tty_dev_name,
-                                  O_RDWR | O_EXCL | O_NDELAY, 0666)) >= 0)
-                {
-                  sprintf(tty_dev_name, "/dev/tty%c%x", c, n);
-                  if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) < 0)
-                    {
-                      wire_fd = -1;
-                      ttyp = -1;
-                    }
-                  else
-                    {
-                      if (verbose)
-                        printf("%s: wire connection on %s\n", progname,
-                               tty_dev_name);
-                      wire_name = strdup(tty_dev_name);
-                      break;
-                    }
-                }
-            }
-          c++;
+      do {
+        for (n = 0; n < 16; n++) {
+          sprintf(tty_dev_name, "/dev/pty%c%x", c, n);
+          if ((wire_fd =
+                   open(tty_dev_name, O_RDWR | O_EXCL | O_NDELAY, 0666)) >= 0) {
+            ttyp = wire_fd;
+            sprintf(tty_dev_name, "/dev/tty%c%x", c, n);
+            if (verbose)
+              printf("%s: wire connection on %s\n", progname, tty_dev_name);
+            wire_name = strdup(tty_dev_name);
+            break;
+          }
         }
-      while ((wire_fd < 0) && (errno != ENOENT));
-#endif
+        c++;
+      } while ((wire_fd < 0) && (errno != ENOENT));
     }
-
-  if (ttyp >= 0)
-    {
-#if defined(TCSANOW)
-      if (tcgetattr(ttyp, &ttybuf) < 0)
 #else
-      if (ioctl(ttyp, TCGETS, (char *)&ttybuf) < 0)
-#endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(wire, TCGETS) failed, errno = %d\n",
-                    progname, errno);
-          wire_fd = -1;
-          ttyp = -1;
+    /*
+     * Here we go for SUNOS, HPUX
+     */
+    c = 'p';
+    do {
+      for (n = 0; n < 16; n++) {
+        sprintf(tty_dev_name, "/dev/ptyp%x", n);
+        if ((wire_fd = open(tty_dev_name, O_RDWR | O_EXCL | O_NDELAY, 0666)) >=
+            0) {
+          sprintf(tty_dev_name, "/dev/tty%c%x", c, n);
+          if ((ttyp = open(tty_dev_name, O_RDWR | O_NDELAY, 0666)) < 0) {
+            wire_fd = -1;
+            ttyp = -1;
+          } else {
+            if (verbose)
+              printf("%s: wire connection on %s\n", progname, tty_dev_name);
+            wire_name = strdup(tty_dev_name);
+            break;
+          }
         }
+      }
+      c++;
+    } while ((wire_fd < 0) && (errno != ENOENT));
+#endif
+  }
+
+  if (ttyp >= 0) {
+#if defined(TCSANOW)
+    if (tcgetattr(ttyp, &ttybuf) < 0)
+#else
+    if (ioctl(ttyp, TCGETS, (char *)&ttybuf) < 0)
+#endif
+    {
+      if (!quiet)
+        fprintf(stderr, "%s: ioctl(wire, TCGETS) failed, errno = %d\n",
+                progname, errno);
+      wire_fd = -1;
+      ttyp = -1;
     }
+  }
 
   ttybuf.c_lflag = 0;
   ttybuf.c_iflag = 0;
@@ -263,48 +234,44 @@ int serial_init(void) {
   ttybuf.c_cc[VTIME] = 0;
   ttybuf.c_cc[VMIN] = 1;
 
-  if (ttyp >= 0)
-    {
+  if (ttyp >= 0) {
 #if defined(TCSANOW)
-      if (tcsetattr(ttyp, TCSANOW, &ttybuf) < 0)
+    if (tcsetattr(ttyp, TCSANOW, &ttybuf) < 0)
 #else
-      if (ioctl(ttyp, TCSETS, (char *)&ttybuf) < 0)
+    if (ioctl(ttyp, TCSETS, (char *)&ttybuf) < 0)
 #endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(wire, TCSETS) failed, errno = %d\n",
-                    progname, errno);
-          wire_fd = -1;
-          ttyp = -1;
-        }
+    {
+      if (!quiet)
+        fprintf(stderr, "%s: ioctl(wire, TCSETS) failed, errno = %d\n",
+                progname, errno);
+      wire_fd = -1;
+      ttyp = -1;
     }
+  }
 
   ir_fd = -1;
-  if (useSerial)
-    {
-      sprintf(tty_dev_name, serialLine);
-      if ((ir_fd = open(tty_dev_name, O_RDWR | O_NDELAY)) >= 0)
-        {
-          if (verbose)
-            printf("%s: IR connection on %s\n", progname, tty_dev_name);
-          ir_name = strdup(tty_dev_name);
+  if (useSerial) {
+    sprintf(tty_dev_name, serialLine);
+    if ((ir_fd = open(tty_dev_name, O_RDWR | O_NDELAY)) >= 0) {
+      if (verbose)
+        printf("%s: IR connection on %s\n", progname, tty_dev_name);
+      ir_name = strdup(tty_dev_name);
     }
-    }
+  }
 
-  if (ir_fd >= 0)
-    {
+  if (ir_fd >= 0) {
 #if defined(TCSANOW)
-      if (tcgetattr(ir_fd, &ttybuf) < 0)
+    if (tcgetattr(ir_fd, &ttybuf) < 0)
 #else
-      if (ioctl(ir_fd, TCGETS, (char *)&ttybuf) < 0)
+    if (ioctl(ir_fd, TCGETS, (char *)&ttybuf) < 0)
 #endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(IR, TCGETS) failed, errno = %d\n",
-                    progname, errno);
-          ir_fd = -1;
-        }
+    {
+      if (!quiet)
+        fprintf(stderr, "%s: ioctl(IR, TCGETS) failed, errno = %d\n", progname,
+                errno);
+      ir_fd = -1;
     }
+  }
 
   ttybuf.c_lflag = 0;
   ttybuf.c_iflag = 0;
@@ -315,20 +282,19 @@ int serial_init(void) {
   ttybuf.c_cc[VTIME] = 0;
   ttybuf.c_cc[VMIN] = 1;
 
-  if (ir_fd >= 0)
-    {
+  if (ir_fd >= 0) {
 #if defined(TCSANOW)
-      if (tcsetattr(ir_fd, TCSANOW, &ttybuf) < 0)
+    if (tcsetattr(ir_fd, TCSANOW, &ttybuf) < 0)
 #else
-      if (ioctl(ir_fd, TCSETS, (char *)&ttybuf) < 0)
+    if (ioctl(ir_fd, TCSETS, (char *)&ttybuf) < 0)
 #endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(IR, TCSETS) failed, errno = %d\n",
-                    progname, errno);
-          ir_fd = -1;
-        }
+    {
+      if (!quiet)
+        fprintf(stderr, "%s: ioctl(IR, TCSETS) failed, errno = %d\n", progname,
+                errno);
+      ir_fd = -1;
     }
+  }
   update_connection_display();
   return 1;
 }
@@ -337,214 +303,203 @@ void serial_baud(int baud) {
   int error = 0;
   struct termios ttybuf;
 
-  if (ir_fd >= 0)
-    {
+  if (ir_fd >= 0) {
 #if defined(TCSANOW)
-      if (tcgetattr(ir_fd, &ttybuf) < 0)
+    if (tcgetattr(ir_fd, &ttybuf) < 0)
 #else
-      if (ioctl(ir_fd, TCGETS, (char *)&ttybuf) < 0)
+    if (ioctl(ir_fd, TCGETS, (char *)&ttybuf) < 0)
 #endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(IR,  TCGETS) failed, errno = %d\n",
-                    progname, errno);
-          ir_fd = -1;
-          error = 1;
-        }
+    {
+      if (!quiet)
+        fprintf(stderr, "%s: ioctl(IR,  TCGETS) failed, errno = %d\n", progname,
+                errno);
+      ir_fd = -1;
+      error = 1;
     }
+  }
 
 #if defined(__APPLE__)
   baud &= 0x7;
-  switch (baud)
-    {
-      case 0:	/* 1200 */
-        ttybuf.c_cflag |= B1200;
-        break;
-      case 1:	/* 1920 */
-#  ifdef B1920
-        ttybuf.c_cflag |= B1920;
-#  endif
-        break;
-      case 2:	/* 2400 */
-        ttybuf.c_cflag |= B2400;
-        break;
-      case 3:	/* 3840 */
-#  ifdef B3840
-        ttybuf.c_cflag |= B3840;
-#  endif
-        break;
-      case 4:	/* 4800 */
-        ttybuf.c_cflag |= B4800;
-        break;
-      case 5:	/* 7680 */
-#  ifdef B7680
-        ttybuf.c_cflag |= B7680;
-#  endif
-        break;
-      case 6:	/* 9600 */
-        ttybuf.c_cflag |= B9600;
-        break;
-      case 7:	/* 15360 */
-#  ifdef B15360
-        ttybuf.c_cflag |= B15360;
-#  endif
-        break;
-    }
+  switch (baud) {
+  case 0: /* 1200 */
+    ttybuf.c_cflag |= B1200;
+    break;
+  case 1: /* 1920 */
+#ifdef B1920
+    ttybuf.c_cflag |= B1920;
+#endif
+    break;
+  case 2: /* 2400 */
+    ttybuf.c_cflag |= B2400;
+    break;
+  case 3: /* 3840 */
+#ifdef B3840
+    ttybuf.c_cflag |= B3840;
+#endif
+    break;
+  case 4: /* 4800 */
+    ttybuf.c_cflag |= B4800;
+    break;
+  case 5: /* 7680 */
+#ifdef B7680
+    ttybuf.c_cflag |= B7680;
+#endif
+    break;
+  case 6: /* 9600 */
+    ttybuf.c_cflag |= B9600;
+    break;
+  case 7: /* 15360 */
+#ifdef B15360
+    ttybuf.c_cflag |= B15360;
+#endif
+    break;
+  }
 
-  if ((ir_fd >= 0) && ((ttybuf.c_ospeed) == 0))
-    {
-      if (!quiet)
-        fprintf(stderr, "%s: can\'t set baud rate, using 9600\n", progname);
-      ttybuf.c_cflag |= B9600;
-    }
+  if ((ir_fd >= 0) && ((ttybuf.c_ospeed) == 0)) {
+    if (!quiet)
+      fprintf(stderr, "%s: can\'t set baud rate, using 9600\n", progname);
+    ttybuf.c_cflag |= B9600;
+  }
 #else
   ttybuf.c_cflag &= ~CBAUD;
 
   baud &= 0x7;
-  switch (baud)
-    {
-      case 0:	/* 1200 */
-        ttybuf.c_cflag |= B1200;
-        break;
-      case 1:	/* 1920 */
-#  ifdef B1920
-        ttybuf.c_cflag |= B1920;
-#  endif
-        break;
-      case 2:	/* 2400 */
-        ttybuf.c_cflag |= B2400;
-        break;
-      case 3:	/* 3840 */
-#  ifdef B3840
-        ttybuf.c_cflag |= B3840;
-#  endif
-        break;
-      case 4:	/* 4800 */
-        ttybuf.c_cflag |= B4800;
-        break;
-      case 5:	/* 7680 */
-#  ifdef B7680
-        ttybuf.c_cflag |= B7680;
-#  endif
-        break;
-      case 6:	/* 9600 */
-        ttybuf.c_cflag |= B9600;
-        break;
-      case 7:	/* 15360 */
-#  ifdef B15360
-        ttybuf.c_cflag |= B15360;
-#  endif
-        break;
-    }
+  switch (baud) {
+  case 0: /* 1200 */
+    ttybuf.c_cflag |= B1200;
+    break;
+  case 1: /* 1920 */
+#ifdef B1920
+    ttybuf.c_cflag |= B1920;
+#endif
+    break;
+  case 2: /* 2400 */
+    ttybuf.c_cflag |= B2400;
+    break;
+  case 3: /* 3840 */
+#ifdef B3840
+    ttybuf.c_cflag |= B3840;
+#endif
+    break;
+  case 4: /* 4800 */
+    ttybuf.c_cflag |= B4800;
+    break;
+  case 5: /* 7680 */
+#ifdef B7680
+    ttybuf.c_cflag |= B7680;
+#endif
+    break;
+  case 6: /* 9600 */
+    ttybuf.c_cflag |= B9600;
+    break;
+  case 7: /* 15360 */
+#ifdef B15360
+    ttybuf.c_cflag |= B15360;
+#endif
+    break;
+  }
 
-  if ((ir_fd >= 0) && ((ttybuf.c_cflag & CBAUD) == 0))
+  if ((ir_fd >= 0) && ((ttybuf.c_cflag & CBAUD) == 0)) {
+    if (!quiet)
+      fprintf(stderr, "%s: can\'t set baud rate, using 9600\n", progname);
+    ttybuf.c_cflag |= B9600;
+  }
+#endif
+  if (ir_fd >= 0) {
+#if defined(TCSANOW)
+    if (tcsetattr(ir_fd, TCSANOW, &ttybuf) < 0)
+#else
+    if (ioctl(ir_fd, TCSETS, (char *)&ttybuf) < 0)
+#endif
     {
       if (!quiet)
-        fprintf(stderr, "%s: can\'t set baud rate, using 9600\n", progname);
-      ttybuf.c_cflag |= B9600;
+        fprintf(stderr, "%s: ioctl(IR,  TCSETS) failed, errno = %d\n", progname,
+                errno);
+      ir_fd = -1;
+      error = 1;
     }
-#endif
-  if (ir_fd >= 0)
-    {
-#if defined(TCSANOW)
-      if (tcsetattr(ir_fd, TCSANOW, &ttybuf) < 0)
-#else
-      if (ioctl(ir_fd, TCSETS, (char *)&ttybuf) < 0)
-#endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(IR,  TCSETS) failed, errno = %d\n",
-                    progname, errno);
-          ir_fd = -1;
-          error = 1;
-        }
-    }
+  }
 
-  if (ttyp >= 0)
-    {
+  if (ttyp >= 0) {
 #if defined(TCSANOW)
-      if (tcgetattr(ttyp, &ttybuf) < 0)
+    if (tcgetattr(ttyp, &ttybuf) < 0)
 #else
-      if (ioctl(ttyp, TCGETS, (char *)&ttybuf) < 0)
+    if (ioctl(ttyp, TCGETS, (char *)&ttybuf) < 0)
 #endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(wire, TCGETS) failed, errno = %d\n",
-                    progname, errno);
-          wire_fd = -1;
-          ttyp = -1;
-          error = 1;
-        }
+    {
+      if (!quiet)
+        fprintf(stderr, "%s: ioctl(wire, TCGETS) failed, errno = %d\n",
+                progname, errno);
+      wire_fd = -1;
+      ttyp = -1;
+      error = 1;
     }
+  }
 
 #if defined(__APPLE__)
 #else
   ttybuf.c_cflag &= ~CBAUD;
 
   baud &= 0x7;
-  switch (baud)
-    {
-      case 0:	/* 1200 */
-        ttybuf.c_cflag |= B1200;
-        break;
-      case 1:	/* 1920 */
-#  ifdef B1920
-        ttybuf.c_cflag |= B1920;
-#  endif
-        break;
-      case 2:	/* 2400 */
-        ttybuf.c_cflag |= B2400;
-        break;
-      case 3:	/* 3840 */
-#  ifdef B3840
-        ttybuf.c_cflag |= B3840;
-#  endif
-        break;
-      case 4:	/* 4800 */
-        ttybuf.c_cflag |= B4800;
-        break;
-      case 5:	/* 7680 */
-#  ifdef B7680
-        ttybuf.c_cflag |= B7680;
-#  endif
-        break;
-      case 6:	/* 9600 */
-        ttybuf.c_cflag |= B9600;
-        break;
-      case 7:	/* 15360 */
-#  ifdef B15360
-        ttybuf.c_cflag |= B15360;
-#  endif
-        break;
-    }
+  switch (baud) {
+  case 0: /* 1200 */
+    ttybuf.c_cflag |= B1200;
+    break;
+  case 1: /* 1920 */
+#ifdef B1920
+    ttybuf.c_cflag |= B1920;
+#endif
+    break;
+  case 2: /* 2400 */
+    ttybuf.c_cflag |= B2400;
+    break;
+  case 3: /* 3840 */
+#ifdef B3840
+    ttybuf.c_cflag |= B3840;
+#endif
+    break;
+  case 4: /* 4800 */
+    ttybuf.c_cflag |= B4800;
+    break;
+  case 5: /* 7680 */
+#ifdef B7680
+    ttybuf.c_cflag |= B7680;
+#endif
+    break;
+  case 6: /* 9600 */
+    ttybuf.c_cflag |= B9600;
+    break;
+  case 7: /* 15360 */
+#ifdef B15360
+    ttybuf.c_cflag |= B15360;
+#endif
+    break;
+  }
 
-  if ((ttyp >= 0) && ((ttybuf.c_cflag & CBAUD) == 0))
+  if ((ttyp >= 0) && ((ttybuf.c_cflag & CBAUD) == 0)) {
+    if (!quiet)
+      fprintf(stderr, "%s: can\'t set baud rate, using 9600\n", progname);
+    ttybuf.c_cflag |= B9600;
+  }
+#endif
+  if (ttyp >= 0) {
+#if defined(TCSANOW)
+    if (tcsetattr(ttyp, TCSANOW, &ttybuf) < 0)
+#else
+    if (ioctl(ttyp, TCSETS, (char *)&ttybuf) < 0)
+#endif
     {
       if (!quiet)
-        fprintf(stderr, "%s: can\'t set baud rate, using 9600\n", progname);
-      ttybuf.c_cflag |= B9600;
+        fprintf(stderr, "%s: ioctl(wire, TCSETS) failed, errno = %d\n",
+                progname, errno);
+      wire_fd = -1;
+      ttyp = -1;
+      error = 1;
     }
-#endif
-  if (ttyp >= 0)
-    {
-#if defined(TCSANOW)
-      if (tcsetattr(ttyp, TCSANOW, &ttybuf) < 0)
-#else
-      if (ioctl(ttyp, TCSETS, (char *)&ttybuf) < 0)
-#endif
-        {
-          if (!quiet)
-            fprintf(stderr, "%s: ioctl(wire, TCSETS) failed, errno = %d\n",
-                    progname, errno);
-          wire_fd = -1;
-          ttyp = -1;
-          error = 1;
-        }
-    }
+  }
   if (error)
     update_connection_display();
 }
-
 
 void transmit_char(void) {
 #ifdef DEBUG_SERIALx

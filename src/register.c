@@ -42,28 +42,21 @@
  * $Id: register.c,v 1.6 1995/01/11 18:20:01 ecd Exp ecd $
  */
 
-
 #include "global.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "hp48.h"
 #include "hp48_emu.h"
 
 extern long nibble_masks[16];
 
-static int start_fields[] = {
-  -1,  0,  2,  0, 15,  3,  0,  0,
-  -1,  0,  2,  0, 15,  3,  0,  0,
-   0,  0,  0
-};
+static int start_fields[] = {-1, 0, 2,  0, 15, 3, 0, 0, -1, 0,
+                             2,  0, 15, 3, 0,  0, 0, 0, 0};
 
-static int end_fields[] = {
-  -1, -1,  2,  2, 15, 14,  1, 15,
-  -1, -1,  2,  2, 15, 14,  1,  4,
-   3,  2,  0
-};
+static int end_fields[] = {-1, -1, 2,  2,  15, 14, 1, 15, -1, -1,
+                           2,  2,  15, 14, 1,  4,  3, 2,  0};
 
 static inline int get_start(int code) {
   int s;
@@ -83,8 +76,8 @@ static inline int get_end(int code) {
   return e;
 }
 
-void add_register(unsigned char *res, unsigned char *r1,
-             unsigned char *r2, int code) {
+void add_register(unsigned char *res, unsigned char *r1, unsigned char *r2,
+                  int code) {
   int t, c, i, s, e;
 
   s = get_start(code);
@@ -128,8 +121,8 @@ void add_p_plus_one(unsigned char *r) {
     saturn.CARRY = 0;
 }
 
-void sub_register(unsigned char *res, unsigned char *r1,
-             unsigned char *r2, int code) {
+void sub_register(unsigned char *res, unsigned char *r1, unsigned char *r2,
+                  int code) {
   int t, c, i, s, e;
 
   s = get_start(code);
@@ -288,8 +281,8 @@ void zero_register(unsigned char *r, int code) {
     r[i] = 0;
 }
 
-void or_register(unsigned char *res, unsigned char *r1,
-            unsigned char *r2, int code) {
+void or_register(unsigned char *res, unsigned char *r1, unsigned char *r2,
+                 int code) {
   int i, s, e;
 
   s = get_start(code);
@@ -299,8 +292,8 @@ void or_register(unsigned char *res, unsigned char *r1,
   }
 }
 
-void and_register(unsigned char *res, unsigned char *r1,
-             unsigned char *r2, int code) {
+void and_register(unsigned char *res, unsigned char *r1, unsigned char *r2,
+                  int code) {
   int i, s, e;
 
   s = get_start(code);
@@ -350,7 +343,7 @@ void shift_left_register(unsigned char *r, int code) {
   s = get_start(code);
   e = get_end(code);
   for (i = e; i > s; i--) {
-    r[i] = r[i-1] & 0x0f;
+    r[i] = r[i - 1] & 0x0f;
   }
   r[s] = 0;
 }
@@ -362,7 +355,7 @@ void shift_left_circ_register(unsigned char *r, int code) {
   e = get_end(code);
   t = r[e] & 0x0f;
   for (i = e; i > s; i--) {
-    r[i] = r[i-1] & 0x0f;
+    r[i] = r[i - 1] & 0x0f;
   }
   r[s] = t;
 }
@@ -375,7 +368,7 @@ void shift_right_register(unsigned char *r, int code) {
   if (r[s] & 0x0f)
     saturn.SB = 1;
   for (i = s; i < e; i++) {
-    r[i] = r[i+1] & 0x0f;
+    r[i] = r[i + 1] & 0x0f;
   }
   r[e] = 0;
 }
@@ -387,7 +380,7 @@ void shift_right_circ_register(unsigned char *r, int code) {
   e = get_end(code);
   t = r[s] & 0x0f;
   for (i = s; i < e; i++) {
-    r[i] = r[i+1] & 0x0f;
+    r[i] = r[i + 1] & 0x0f;
   }
   r[e] = t;
   if (t)
@@ -522,7 +515,8 @@ int is_greater_register(unsigned char *r1, unsigned char *r2, int code) {
   return z;
 }
 
-int is_greater_or_equal_register(unsigned char *r1, unsigned char *r2, int code) {
+int is_greater_or_equal_register(unsigned char *r1, unsigned char *r2,
+                                 int code) {
   int z, i, s, e;
 
   s = get_start(code);

@@ -83,21 +83,21 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "debugger.h"
+#include "device.h"
 #include "hp48.h"
 #include "hp48_emu.h"
-#include "device.h"
-#include "x48_x11.h"
-#include "timer.h"
-#include "debugger.h"
 #include "romio.h"
+#include "timer.h"
+#include "x48_x11.h"
 
-static int	interrupt_called = 0;
-extern long	nibble_masks[16];
+static int interrupt_called = 0;
+extern long nibble_masks[16];
 
-int		got_alarm;
+int got_alarm;
 
-int		conf_bank1 = 0x00000;
-int		conf_bank2 = 0x00000;
+int conf_bank1 = 0x00000;
+int conf_bank2 = 0x00000;
 
 void do_in(void) {
   int i, in, out;
@@ -121,17 +121,11 @@ void do_in(void) {
   }
 }
 
-void clear_program_stat(int n) {
-  saturn.PSTAT[n] = 0;
-}
+void clear_program_stat(int n) { saturn.PSTAT[n] = 0; }
 
-void set_program_stat(int n) {
-  saturn.PSTAT[n] = 1;
-}
+void set_program_stat(int n) { saturn.PSTAT[n] = 1; }
 
-int get_program_stat(int n) {
-  return saturn.PSTAT[n];
-}
+int get_program_stat(int n) { return saturn.PSTAT[n]; }
 
 void register_to_status(unsigned char *r) {
   int i;
@@ -179,64 +173,55 @@ void set_register_nibble(unsigned char *reg, int n, unsigned char val) {
   reg[n] = val;
 }
 
-unsigned char get_register_nibble(unsigned char *reg, int n) {
-  return reg[n];
-}
+unsigned char get_register_nibble(unsigned char *reg, int n) { return reg[n]; }
 
 void set_register_bit(unsigned char *reg, int n) {
-  reg[n/4] |= (1 << (n%4));
+  reg[n / 4] |= (1 << (n % 4));
 }
 
 void clear_register_bit(unsigned char *reg, int n) {
-  reg[n/4] &= ~(1 << (n%4));
+  reg[n / 4] &= ~(1 << (n % 4));
 }
 
 int get_register_bit(unsigned char *reg, int n) {
-  return ((int)(reg[n/4] & (1 << (n%4))) > 0)?1:0;
+  return ((int)(reg[n / 4] & (1 << (n % 4))) > 0) ? 1 : 0;
 }
 
-short conf_tab_sx[] = { 1, 2, 2, 2, 2, 0 };
-short conf_tab_gx[] = { 1, 2, 2, 2, 2, 0 };
+short conf_tab_sx[] = {1, 2, 2, 2, 2, 0};
+short conf_tab_gx[] = {1, 2, 2, 2, 2, 0};
 
 void do_reset(void) {
   int i;
 
-  for (i = 0; i < 6; i++)
-    {
-      if (opt_gx)
-        saturn.mem_cntl[i].unconfigured = conf_tab_gx[i];
-      else
-        saturn.mem_cntl[i].unconfigured = conf_tab_sx[i];
-      saturn.mem_cntl[i].config[0] = 0x0;
-      saturn.mem_cntl[i].config[1] = 0x0;
-    }
+  for (i = 0; i < 6; i++) {
+    if (opt_gx)
+      saturn.mem_cntl[i].unconfigured = conf_tab_gx[i];
+    else
+      saturn.mem_cntl[i].unconfigured = conf_tab_sx[i];
+    saturn.mem_cntl[i].config[0] = 0x0;
+    saturn.mem_cntl[i].config[1] = 0x0;
+  }
 
 #ifdef DEBUG_CONFIG
   fprintf(stderr, "%.5lx: RESET\n", saturn.PC);
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].unconfigured)
-        fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
-      else
-        fprintf(stderr, "MEMORY CONTROLLER %d is configured to %.5lx, %.5lx\n",
-                i, saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
-    }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].unconfigured)
+      fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
+    else
+      fprintf(stderr, "MEMORY CONTROLLER %d is configured to %.5lx, %.5lx\n", i,
+              saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
+  }
 #endif
 }
 
-void do_inton(void) {
-  saturn.kbd_ien = 1;
-}
+void do_inton(void) { saturn.kbd_ien = 1; }
 
-void do_intoff(void) {
-  saturn.kbd_ien = 0;
-}
+void do_intoff(void) { saturn.kbd_ien = 0; }
 
 void do_return_interupt(void) {
   if (saturn.int_pending) {
 #ifdef DEBUG_INTERRUPT
-    fprintf(stderr, "PC = %.5lx: RTI SERVICE PENDING INTERRUPT\n",
-            saturn.PC);
+    fprintf(stderr, "PC = %.5lx: RTI SERVICE PENDING INTERRUPT\n", saturn.PC);
 #endif
     saturn.int_pending = 0;
     saturn.intenable = 0;
@@ -255,7 +240,6 @@ void do_return_interupt(void) {
       schedule_event = 0;
       sched_adjtime = 0;
     }
-
   }
 }
 
@@ -314,30 +298,27 @@ void do_unconfigure(void) {
     conf |= saturn.C[i];
   }
 
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].config[0] == conf)
-        {
-          if (opt_gx)
-            saturn.mem_cntl[i].unconfigured = conf_tab_gx[i];
-          else
-            saturn.mem_cntl[i].unconfigured = conf_tab_sx[i];
-          saturn.mem_cntl[i].config[0] = 0x0;
-          saturn.mem_cntl[i].config[1] = 0x0;
-          break;
-        }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].config[0] == conf) {
+      if (opt_gx)
+        saturn.mem_cntl[i].unconfigured = conf_tab_gx[i];
+      else
+        saturn.mem_cntl[i].unconfigured = conf_tab_sx[i];
+      saturn.mem_cntl[i].config[0] = 0x0;
+      saturn.mem_cntl[i].config[1] = 0x0;
+      break;
     }
+  }
 
 #ifdef DEBUG_CONFIG
   fprintf(stderr, "%.5lx: UNCNFG %.5x:\n", saturn.PC, conf);
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].unconfigured)
-        fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
-      else
-        fprintf(stderr, "MEMORY CONTROLLER %d is configured to %.5lx, %.5lx\n",
-                i, saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
-    }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].unconfigured)
+      fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
+    else
+      fprintf(stderr, "MEMORY CONTROLLER %d is configured to %.5lx, %.5lx\n", i,
+              saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
+  }
 #endif
 }
 
@@ -351,40 +332,35 @@ void do_configure(void) {
     conf |= saturn.C[i];
   }
 
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].unconfigured)
-        {
-          saturn.mem_cntl[i].unconfigured--;
-          saturn.mem_cntl[i].config[saturn.mem_cntl[i].unconfigured] = conf;
-          break;
-        }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].unconfigured) {
+      saturn.mem_cntl[i].unconfigured--;
+      saturn.mem_cntl[i].config[saturn.mem_cntl[i].unconfigured] = conf;
+      break;
     }
+  }
 
 #ifdef DEBUG_CONFIG
   fprintf(stderr, "%.5lx: CONFIG %.5lx:\n", saturn.PC, conf);
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].unconfigured)
-        fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
-      else
-        fprintf(stderr, "MEMORY CONTROLLER %d at %.5lx, %.5lx\n",
-                i, saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
-    }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].unconfigured)
+      fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
+    else
+      fprintf(stderr, "MEMORY CONTROLLER %d at %.5lx, %.5lx\n", i,
+              saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
+  }
 #endif
 }
 
 int get_identification(void) {
   int i;
-  static int chip_id[]
-             = { 0, 0, 0, 0, 0x05, 0xf6, 0x07, 0xf8, 0x01, 0xf2, 0, 0 };
+  static int chip_id[] = {0, 0, 0, 0, 0x05, 0xf6, 0x07, 0xf8, 0x01, 0xf2, 0, 0};
   int id;
 
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].unconfigured)
-        break;
-    }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].unconfigured)
+      break;
+  }
   if (i < 6)
     id = chip_id[2 * i + (2 - saturn.mem_cntl[i].unconfigured)];
   else
@@ -392,29 +368,25 @@ int get_identification(void) {
 
 #ifdef DEBUG_ID
   fprintf(stderr, "%.5lx: C=ID, returning: %x\n", saturn.PC, id);
-  for (i = 0; i < 6; i++)
-    {
-      if (saturn.mem_cntl[i].unconfigured == 2)
-        fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
-      else if (saturn.mem_cntl[i].unconfigured == 1)
-        {
-          if (i == 0)
-            fprintf(stderr, "MEMORY CONTROLLER %d unconfigured\n", i);
-          else
-            fprintf(stderr, "MEMORY CONTROLLER %d configured to ????? %.5lx\n",
-                i, saturn.mem_cntl[i].config[1]);
-        }
+  for (i = 0; i < 6; i++) {
+    if (saturn.mem_cntl[i].unconfigured == 2)
+      fprintf(stderr, "MEMORY CONTROLLER %d is unconfigured\n", i);
+    else if (saturn.mem_cntl[i].unconfigured == 1) {
+      if (i == 0)
+        fprintf(stderr, "MEMORY CONTROLLER %d unconfigured\n", i);
       else
-        fprintf(stderr, "MEMORY CONTROLLER %d configured to %.5lx, %.5lx\n",
-                i, saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
-    }
+        fprintf(stderr, "MEMORY CONTROLLER %d configured to ????? %.5lx\n", i,
+                saturn.mem_cntl[i].config[1]);
+    } else
+      fprintf(stderr, "MEMORY CONTROLLER %d configured to %.5lx, %.5lx\n", i,
+              saturn.mem_cntl[i].config[0], saturn.mem_cntl[i].config[1]);
+  }
 #endif
 
-  for (i = 0; i < 3; i++)
-    {
-      saturn.C[i] = id & 0x0f;
-      id >>= 4;
-    }
+  for (i = 0; i < 3; i++) {
+    saturn.C[i] = id & 0x0f;
+    id >>= 4;
+  }
   return 0;
 }
 
@@ -426,7 +398,8 @@ void do_shutdown(void) {
     device.display_touched = 0;
     update_display();
 #ifdef HAVE_XSHM
-    if (disp.display_update) refresh_display();
+    if (disp.display_update)
+      refresh_display();
 #endif
   }
 
@@ -463,7 +436,8 @@ void do_shutdown(void) {
       got_alarm = 0;
 
 #ifdef HAVE_XSHM
-      if (disp.display_update) refresh_display();
+      if (disp.display_update)
+        refresh_display();
 #endif
 
       ticks = get_t1_t2();
@@ -479,34 +453,28 @@ void do_shutdown(void) {
           wake = 1;
       }
 
-      if (saturn.timer2 <= 0)
-        {
-          if (saturn.t2_ctrl & 0x04)
-            {
-              wake = 1;
-            }
-          if (saturn.t2_ctrl & 0x02)
-            {
-              wake = 1;
-              saturn.t2_ctrl |= 0x08;
-              do_interupt();
-            }
+      if (saturn.timer2 <= 0) {
+        if (saturn.t2_ctrl & 0x04) {
+          wake = 1;
         }
+        if (saturn.t2_ctrl & 0x02) {
+          wake = 1;
+          saturn.t2_ctrl |= 0x08;
+          do_interupt();
+        }
+      }
 
-      if (saturn.timer1 <= 0)
-        {
-          saturn.timer1 &= 0x0f;
-          if (saturn.t1_ctrl & 0x04)
-            {
-              wake = 1;
-            }
-          if (saturn.t1_ctrl & 0x03)
-            {
-              wake = 1;
-              saturn.t1_ctrl |= 0x08;
-              do_interupt();
-            }
+      if (saturn.timer1 <= 0) {
+        saturn.timer1 &= 0x0f;
+        if (saturn.t1_ctrl & 0x04) {
+          wake = 1;
         }
+        if (saturn.t1_ctrl & 0x03) {
+          wake = 1;
+          saturn.t1_ctrl |= 0x08;
+          do_interupt();
+        }
+      }
 
       if (wake == 0) {
         interrupt_called = 0;
@@ -518,10 +486,9 @@ void do_shutdown(void) {
       alarms++;
     }
 
-    if (enter_debugger)
-      {
-        wake = 1;
-      }
+    if (enter_debugger) {
+      wake = 1;
+    }
   } while (wake == 0);
 
   stop_timer(IDLE_TIMER);
@@ -529,24 +496,40 @@ void do_shutdown(void) {
 }
 
 void set_hardware_stat(int op) {
-  if (op & 1) saturn.XM = 1;
-  if (op & 2) saturn.SB = 1;
-  if (op & 4) saturn.SR = 1;
-  if (op & 8) saturn.MP = 1;
+  if (op & 1)
+    saturn.XM = 1;
+  if (op & 2)
+    saturn.SB = 1;
+  if (op & 4)
+    saturn.SR = 1;
+  if (op & 8)
+    saturn.MP = 1;
 }
 
 void clear_hardware_stat(int op) {
-  if (op & 1) saturn.XM = 0;
-  if (op & 2) saturn.SB = 0;
-  if (op & 4) saturn.SR = 0;
-  if (op & 8) saturn.MP = 0;
+  if (op & 1)
+    saturn.XM = 0;
+  if (op & 2)
+    saturn.SB = 0;
+  if (op & 4)
+    saturn.SR = 0;
+  if (op & 8)
+    saturn.MP = 0;
 }
 
 int is_zero_hardware_stat(int op) {
-  if (op & 1) if (saturn.XM != 0) return 0;
-  if (op & 2) if (saturn.SB != 0) return 0;
-  if (op & 4) if (saturn.SR != 0) return 0;
-  if (op & 8) if (saturn.MP != 0) return 0;
+  if (op & 1)
+    if (saturn.XM != 0)
+      return 0;
+  if (op & 2)
+    if (saturn.SB != 0)
+      return 0;
+  if (op & 4)
+    if (saturn.SR != 0)
+      return 0;
+  if (op & 8)
+    if (saturn.MP != 0)
+      return 0;
   return 1;
 }
 
@@ -561,7 +544,7 @@ void push_return_addr(long addr) {
     }
 #endif
     for (i = 1; i < NR_RSTK; i++)
-      saturn.rstk[i-1] = saturn.rstk[i];
+      saturn.rstk[i - 1] = saturn.rstk[i];
     saturn.rstkp--;
   }
   saturn.rstk[saturn.rstkp] = addr;
@@ -581,14 +564,14 @@ long pop_return_addr(void) {
     fprintf(stderr, "RSTK[%d] %.5x\n", i, saturn.rstk[i]);
   }
   fprintf(stderr, "POP %.5x:\n",
-          (saturn.rstkp >= 0) ? saturn.rstk[saturn.rstkp]:0);
+          (saturn.rstkp >= 0) ? saturn.rstk[saturn.rstkp] : 0);
 #endif
   if (saturn.rstkp < 0)
     return 0;
   return saturn.rstk[saturn.rstkp--];
 }
 
-char * make_hexstr(long addr, int n) {
+char *make_hexstr(long addr, int n) {
   static char str[44];
   int i, t, trunc;
 
@@ -598,7 +581,7 @@ char * make_hexstr(long addr, int n) {
     trunc = 1;
   }
   for (i = 0; i < n; i++) {
-    t = read_nibble(addr+i);
+    t = read_nibble(addr + i);
     if (t <= 9)
       str[i] = '0' + t;
     else
@@ -607,9 +590,9 @@ char * make_hexstr(long addr, int n) {
   str[n] = '\0';
   if (trunc) {
     str[n] = '.';
-    str[n+1] = '.';
-    str[n+2] = '.';
-    str[n+3] = '\0';
+    str[n + 1] = '.';
+    str[n + 2] = '.';
+    str[n + 3] = '\0';
   }
   return str;
 }
@@ -698,17 +681,11 @@ void add_address(word_20 *dat, int add) {
   *dat &= 0xfffff;
 }
 
-static int start_fields[] = {
-  -1,  0,  2,  0, 15,  3,  0,  0,
-  -1,  0,  2,  0, 15,  3,  0,  0,
-   0,  0,  0
-};
+static int start_fields[] = {-1, 0, 2,  0, 15, 3, 0, 0, -1, 0,
+                             2,  0, 15, 3, 0,  0, 0, 0, 0};
 
-static int end_fields[] = {
-  -1, -1,  2,  2, 15, 14,  1, 15,
-  -1, -1,  2,  2, 15, 14,  1,  4,
-   3,  2,  0
-};
+static int end_fields[] = {-1, -1, 2,  2,  15, 14, 1, 15, -1, -1,
+                           2,  2,  15, 14, 1,  4,  3, 2,  0};
 
 static inline int get_start(int code) {
   int s;

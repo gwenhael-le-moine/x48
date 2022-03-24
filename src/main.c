@@ -57,45 +57,44 @@
  * $Id: main.c,v 1.11 1995/01/11 18:20:01 ecd Exp ecd $
  */
 
-
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <unistd.h>
 #include <string.h>
-#include <errno.h>
 #include <sys/time.h>
-#include <fcntl.h>
+#include <unistd.h>
 
-#include "x48_x11.h"
-#include "hp48.h"
 #include "debugger.h"
+#include "hp48.h"
+#include "x48_x11.h"
 
 #include <langinfo.h>
 #include <locale.h>
 
-char  *progname;
-char  *res_name;
-char  *res_class;
+char *progname;
+char *res_name;
+char *res_class;
 
-int    saved_argc;
+int saved_argc;
 char **saved_argv;
 
 saturn_t saturn;
 
 void signal_handler(int sig) {
   switch (sig) {
-    case SIGINT:
-      enter_debugger |= USER_INTERRUPT;
-      break;
-    case SIGALRM:
-      got_alarm = 1;
-      break;
-    case SIGPIPE:
-      exit_x48(0);
-      exit (0);
-    default:
-      break;
+  case SIGINT:
+    enter_debugger |= USER_INTERRUPT;
+    break;
+  case SIGALRM:
+    got_alarm = 1;
+    break;
+  case SIGPIPE:
+    exit_x48(0);
+    exit(0);
+  default:
+    break;
   }
 }
 
@@ -104,24 +103,20 @@ void save_options(int argc, char **argv) {
 
   saved_argc = argc;
   saved_argv = (char **)malloc((argc + 2) * sizeof(char *));
-  if (saved_argv == (char **)0)
-    {
-      fprintf(stderr, "%s: malloc failed in save_options(), exit\n", progname);
-      exit (1);
-    }
+  if (saved_argv == (char **)0) {
+    fprintf(stderr, "%s: malloc failed in save_options(), exit\n", progname);
+    exit(1);
+  }
   saved_argv[argc] = (char *)0;
-  while (argc--)
-    {
-      l = strlen(argv[argc]) + 1;
-      saved_argv[argc] = (char *)malloc(l);
-      if (saved_argv[argc] == (char *)0)
-        {
-          fprintf(stderr, "%s: malloc failed in save_options(), exit\n",
-                  progname);
-          exit (1);
-        }
-      memcpy(saved_argv[argc], argv[argc], l);
+  while (argc--) {
+    l = strlen(argv[argc]) + 1;
+    saved_argv[argc] = (char *)malloc(l);
+    if (saved_argv[argc] == (char *)0) {
+      fprintf(stderr, "%s: malloc failed in save_options(), exit\n", progname);
+      exit(1);
     }
+    memcpy(saved_argv[argc], argv[argc], l);
+  }
 }
 
 int main(int argc, char **argv) {
@@ -152,7 +147,7 @@ int main(int argc, char **argv) {
    *  Open up the display
    */
   if (InitDisplay(argc, argv) < 0) {
-    exit (1);
+    exit(1);
   }
 
   /*
@@ -165,7 +160,7 @@ int main(int argc, char **argv) {
    */
   if (CreateWindows(saved_argc, saved_argv) < 0) {
     fprintf(stderr, "%s: can\'t create window\n", progname);
-    exit (1);
+    exit(1);
   }
 
   /*
@@ -229,9 +224,9 @@ int main(int argc, char **argv) {
   do {
 
     if (!exec_flags)
-      emulate ();
+      emulate();
     else
-      emulate_debug ();
+      emulate_debug();
 
     debug();
 

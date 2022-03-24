@@ -53,9 +53,9 @@
 
 #include <stdlib.h>
 
+#include "device.h"
 #include "hp48.h"
 #include "hp48_emu.h"
-#include "device.h"
 #include "timer.h"
 #include "x48_x11.h"
 
@@ -175,10 +175,10 @@ void check_devices(void) {
 
 #if 0
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 void check_out_register(void) {
   static int au = -2;

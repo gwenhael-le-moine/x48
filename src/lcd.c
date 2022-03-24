@@ -60,55 +60,53 @@
  * $Id: lcd.c,v 1.13 1995/01/11 18:20:01 ecd Exp ecd $
  */
 
-
 #include "global.h"
 
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 #ifdef SUNOS
 #include <memory.h>
 #endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#include "annunc.h"
+#include "device.h"
 #include "hp48.h"
 #include "hp48_emu.h"
 #include "x48_x11.h"
-#include "annunc.h"
-#include "device.h"
 
 static int last_annunc_state = -1;
 
 display_t display;
 
-#define DISP_ROWS          64
+#define DISP_ROWS 64
 
-#define NIBS_PER_BUFFER_ROW    (NIBBLES_PER_ROW + 2)
+#define NIBS_PER_BUFFER_ROW (NIBBLES_PER_ROW + 2)
 
 unsigned char disp_buf[DISP_ROWS][NIBS_PER_BUFFER_ROW];
 unsigned char lcd_buffer[DISP_ROWS][NIBS_PER_BUFFER_ROW];
 
 Pixmap nibble_maps[16];
 
-unsigned char nibbles[16][2] =
-{
-  { 0x00, 0x00 },	/* ---- */
-  { 0x03, 0x03 },	/* *--- */
-  { 0x0c, 0x0c },	/* -*-- */
-  { 0x0f, 0x0f },	/* **-- */
-  { 0x30, 0x30 },	/* --*- */
-  { 0x33, 0x33 },	/* *-*- */
-  { 0x3c, 0x3c },	/* -**- */
-  { 0x3f, 0x3f },	/* ***- */
-  { 0xc0, 0xc0 },	/* ---* */
-  { 0xc3, 0xc3 },	/* *--* */
-  { 0xcc, 0xcc },	/* -*-* */
-  { 0xcf, 0xcf },	/* **-* */
-  { 0xf0, 0xf0 },	/* --** */
-  { 0xf3, 0xf3 },	/* *-** */
-  { 0xfc, 0xfc },	/* -*** */
-  { 0xff, 0xff }	/* **** */
+unsigned char nibbles[16][2] = {
+    {0x00, 0x00}, /* ---- */
+    {0x03, 0x03}, /* *--- */
+    {0x0c, 0x0c}, /* -*-- */
+    {0x0f, 0x0f}, /* **-- */
+    {0x30, 0x30}, /* --*- */
+    {0x33, 0x33}, /* *-*- */
+    {0x3c, 0x3c}, /* -**- */
+    {0x3f, 0x3f}, /* ***- */
+    {0xc0, 0xc0}, /* ---* */
+    {0xc3, 0xc3}, /* *--* */
+    {0xcc, 0xcc}, /* -*-* */
+    {0xcf, 0xcf}, /* **-* */
+    {0xf0, 0xf0}, /* --** */
+    {0xf3, 0xf3}, /* *-** */
+    {0xfc, 0xfc}, /* -*** */
+    {0xff, 0xff}  /* **** */
 };
 
 static unsigned char nibble_bits[16];
@@ -117,45 +115,45 @@ void init_nibble_maps(void) {
   int i;
 
   for (i = 0; i < 16; i++) {
-    nibble_maps[i] = XCreateBitmapFromData(dpy, disp.win,
-                                           (char *)nibbles[i], 8, 2);
+    nibble_maps[i] =
+        XCreateBitmapFromData(dpy, disp.win, (char *)nibbles[i], 8, 2);
   }
 #ifdef HAVE_XSHM
   if (shm_flag) {
     if (disp.disp_image->bitmap_bit_order == MSBFirst) {
-      nibble_bits[0x0] = 0x00;		/* ---- */
-      nibble_bits[0x1] = 0xc0;		/* *--- */
-      nibble_bits[0x2] = 0x30;		/* -*-- */
-      nibble_bits[0x3] = 0xf0;		/* **-- */
-      nibble_bits[0x4] = 0x0c;		/* --*- */
-      nibble_bits[0x5] = 0xcc;		/* *-*- */
-      nibble_bits[0x6] = 0x3c;		/* -**- */
-      nibble_bits[0x7] = 0xfc;		/* ***- */
-      nibble_bits[0x8] = 0x03;		/* ---* */
-      nibble_bits[0x9] = 0xc3;		/* *--* */
-      nibble_bits[0xa] = 0x33;		/* -*-* */
-      nibble_bits[0xb] = 0xf3;		/* **-* */
-      nibble_bits[0xc] = 0x0f;		/* --** */
-      nibble_bits[0xd] = 0xcf;		/* *-** */
-      nibble_bits[0xe] = 0x3f;		/* -*** */
-      nibble_bits[0xf] = 0xff;		/* **** */
+      nibble_bits[0x0] = 0x00; /* ---- */
+      nibble_bits[0x1] = 0xc0; /* *--- */
+      nibble_bits[0x2] = 0x30; /* -*-- */
+      nibble_bits[0x3] = 0xf0; /* **-- */
+      nibble_bits[0x4] = 0x0c; /* --*- */
+      nibble_bits[0x5] = 0xcc; /* *-*- */
+      nibble_bits[0x6] = 0x3c; /* -**- */
+      nibble_bits[0x7] = 0xfc; /* ***- */
+      nibble_bits[0x8] = 0x03; /* ---* */
+      nibble_bits[0x9] = 0xc3; /* *--* */
+      nibble_bits[0xa] = 0x33; /* -*-* */
+      nibble_bits[0xb] = 0xf3; /* **-* */
+      nibble_bits[0xc] = 0x0f; /* --** */
+      nibble_bits[0xd] = 0xcf; /* *-** */
+      nibble_bits[0xe] = 0x3f; /* -*** */
+      nibble_bits[0xf] = 0xff; /* **** */
     } else {
-      nibble_bits[0x0] = 0x00;		/* ---- */
-      nibble_bits[0x1] = 0x03;		/* *--- */
-      nibble_bits[0x2] = 0x0c;		/* -*-- */
-      nibble_bits[0x3] = 0x0f;		/* **-- */
-      nibble_bits[0x4] = 0x30;		/* --*- */
-      nibble_bits[0x5] = 0x33;		/* *-*- */
-      nibble_bits[0x6] = 0x3c;		/* -**- */
-      nibble_bits[0x7] = 0x3f;		/* ***- */
-      nibble_bits[0x8] = 0xc0;		/* ---* */
-      nibble_bits[0x9] = 0xc3;		/* *--* */
-      nibble_bits[0xa] = 0xcc;		/* -*-* */
-      nibble_bits[0xb] = 0xcf;		/* **-* */
-      nibble_bits[0xc] = 0xf0;		/* --** */
-      nibble_bits[0xd] = 0xf3;		/* *-** */
-      nibble_bits[0xe] = 0xfc;		/* -*** */
-      nibble_bits[0xf] = 0xff;		/* **** */
+      nibble_bits[0x0] = 0x00; /* ---- */
+      nibble_bits[0x1] = 0x03; /* *--- */
+      nibble_bits[0x2] = 0x0c; /* -*-- */
+      nibble_bits[0x3] = 0x0f; /* **-- */
+      nibble_bits[0x4] = 0x30; /* --*- */
+      nibble_bits[0x5] = 0x33; /* *-*- */
+      nibble_bits[0x6] = 0x3c; /* -**- */
+      nibble_bits[0x7] = 0x3f; /* ***- */
+      nibble_bits[0x8] = 0xc0; /* ---* */
+      nibble_bits[0x9] = 0xc3; /* *--* */
+      nibble_bits[0xa] = 0xcc; /* -*-* */
+      nibble_bits[0xb] = 0xcf; /* **-* */
+      nibble_bits[0xc] = 0xf0; /* --** */
+      nibble_bits[0xd] = 0xf3; /* *-** */
+      nibble_bits[0xe] = 0xfc; /* -*** */
+      nibble_bits[0xf] = 0xff; /* **** */
     }
   }
 #endif
@@ -176,12 +174,12 @@ void init_display(void) {
     disp.lines = 110;
 
   if (display.offset > 3)
-    display.nibs_per_line = (NIBBLES_PER_ROW+saturn.line_offset+2) & 0xfff;
+    display.nibs_per_line = (NIBBLES_PER_ROW + saturn.line_offset + 2) & 0xfff;
   else
-    display.nibs_per_line = (NIBBLES_PER_ROW+saturn.line_offset) & 0xfff;
+    display.nibs_per_line = (NIBBLES_PER_ROW + saturn.line_offset) & 0xfff;
 
-  display.disp_end = display.disp_start +
-                 (display.nibs_per_line * (display.lines + 1));
+  display.disp_end =
+      display.disp_start + (display.nibs_per_line * (display.lines + 1));
 
   display.menu_start = saturn.menu_addr;
   display.menu_end = saturn.menu_addr + 0x110;
@@ -238,11 +236,10 @@ void update_display(void) {
   word_20 data_addr, data_addr_2;
 #endif
 
-  if (!disp.mapped)
-    {
-      refresh_icon();
-      return;
-    }
+  if (!disp.mapped) {
+    refresh_icon();
+    return;
+  }
   if (display.on) {
     addr = display.disp_start;
 #ifdef HAVE_XSHM
@@ -269,9 +266,9 @@ void update_display(void) {
 #endif
       if (display.offset != old_offset) {
         memset(disp_buf, 0xf0,
-               (size_t)((display.lines+1) * NIBS_PER_BUFFER_ROW));
+               (size_t)((display.lines + 1) * NIBS_PER_BUFFER_ROW));
         memset(lcd_buffer, 0xf0,
-               (size_t)((display.lines+1) * NIBS_PER_BUFFER_ROW));
+               (size_t)((display.lines + 1) * NIBS_PER_BUFFER_ROW));
         old_offset = display.offset;
       }
       if (display.lines != old_lines) {
@@ -316,9 +313,11 @@ void update_display(void) {
   } else {
 #ifdef HAVE_XSHM
     if (shm_flag) {
-      memset(disp.disp_image->data, 0,
+      memset(
+          disp.disp_image->data, 0,
           (size_t)(disp.disp_image->bytes_per_line * disp.disp_image->height));
-      memset(disp.menu_image->data, 0,
+      memset(
+          disp.menu_image->data, 0,
           (size_t)(disp.menu_image->bytes_per_line * disp.menu_image->height));
       disp.display_update = UPDATE_DISP | UPDATE_MENU;
     } else {
@@ -361,8 +360,8 @@ void disp_draw_nibble(word_20 addr, word_4 val) {
     if (shm_flag) {
       shm_addr = (2 * y * disp.disp_image->bytes_per_line) + x;
       disp.disp_image->data[shm_addr] = nibble_bits[val];
-      disp.disp_image->data[shm_addr+disp.disp_image->bytes_per_line] =
-                nibble_bits[val];
+      disp.disp_image->data[shm_addr + disp.disp_image->bytes_per_line] =
+          nibble_bits[val];
       disp.display_update |= UPDATE_DISP;
     } else {
 #endif
@@ -380,8 +379,7 @@ void disp_draw_nibble(word_20 addr, word_4 val) {
       for (y = 0; y < display.lines; y++) {
         disp.disp_image->data[shm_addr] = nibble_bits[val];
         shm_addr += disp.disp_image->bytes_per_line;
-        disp.disp_image->data[shm_addr]
-                  = nibble_bits[val];
+        disp.disp_image->data[shm_addr] = nibble_bits[val];
         shm_addr += disp.disp_image->bytes_per_line;
       }
       disp.display_update |= UPDATE_DISP;
@@ -409,11 +407,12 @@ void menu_draw_nibble(word_20 addr, word_4 val) {
   offset = (addr - display.menu_start);
 #ifdef HAVE_XSHM
   if (shm_flag) {
-    shm_addr = 2 * (offset / NIBBLES_PER_ROW) * disp.menu_image->bytes_per_line
-                 + (offset % NIBBLES_PER_ROW);
+    shm_addr =
+        2 * (offset / NIBBLES_PER_ROW) * disp.menu_image->bytes_per_line +
+        (offset % NIBBLES_PER_ROW);
     disp.menu_image->data[shm_addr] = nibble_bits[val];
-    disp.menu_image->data[shm_addr+disp.menu_image->bytes_per_line] =
-                nibble_bits[val];
+    disp.menu_image->data[shm_addr + disp.menu_image->bytes_per_line] =
+        nibble_bits[val];
     disp.display_update |= UPDATE_MENU;
   } else {
 #endif
@@ -428,25 +427,23 @@ void menu_draw_nibble(word_20 addr, word_4 val) {
 #endif
 }
 
-
 struct ann_struct {
-  int            bit;
-  int            x;
-  int            y;
-  unsigned int   width;
-  unsigned int   height;
+  int bit;
+  int x;
+  int y;
+  unsigned int width;
+  unsigned int height;
   unsigned char *bits;
-  Pixmap         pixmap;
+  Pixmap pixmap;
 } ann_tbl[] = {
-  { ANN_LEFT, 16, 4, ann_left_width, ann_left_height, ann_left_bits },
-  { ANN_RIGHT, 61, 4, ann_right_width, ann_right_height, ann_right_bits },
-  { ANN_ALPHA, 106, 4, ann_alpha_width, ann_alpha_height, ann_alpha_bits },
-  { ANN_BATTERY, 151, 4, ann_battery_width, ann_battery_height,
-                         ann_battery_bits },
-  { ANN_BUSY, 196, 4, ann_busy_width, ann_busy_height, ann_busy_bits },
-  { ANN_IO, 241, 4, ann_io_width, ann_io_height, ann_io_bits },
-  { 0 }
-};
+    {ANN_LEFT, 16, 4, ann_left_width, ann_left_height, ann_left_bits},
+    {ANN_RIGHT, 61, 4, ann_right_width, ann_right_height, ann_right_bits},
+    {ANN_ALPHA, 106, 4, ann_alpha_width, ann_alpha_height, ann_alpha_bits},
+    {ANN_BATTERY, 151, 4, ann_battery_width, ann_battery_height,
+     ann_battery_bits},
+    {ANN_BUSY, 196, 4, ann_busy_width, ann_busy_height, ann_busy_bits},
+    {ANN_IO, 241, 4, ann_io_width, ann_io_height, ann_io_bits},
+    {0}};
 
 void draw_annunc(void) {
   int val;
@@ -457,20 +454,16 @@ void draw_annunc(void) {
   if (val == last_annunc_state)
     return;
   last_annunc_state = val;
-  for (i = 0; ann_tbl[i].bit; i++)
-    {
-      if ((ann_tbl[i].bit & val) == ann_tbl[i].bit)
-        {
-          XCopyPlane(dpy, ann_tbl[i].pixmap, disp.win, disp.gc, 0, 0,
-                     ann_tbl[i].width, ann_tbl[i].height,
-                     ann_tbl[i].x, ann_tbl[i].y, 1);
-        }
-      else
-        {
-          XClearArea(dpy, disp.win, ann_tbl[i].x, ann_tbl[i].y,
-                     ann_tbl[i].width, ann_tbl[i].height, False);
-        }
+  for (i = 0; ann_tbl[i].bit; i++) {
+    if ((ann_tbl[i].bit & val) == ann_tbl[i].bit) {
+      XCopyPlane(dpy, ann_tbl[i].pixmap, disp.win, disp.gc, 0, 0,
+                 ann_tbl[i].width, ann_tbl[i].height, ann_tbl[i].x,
+                 ann_tbl[i].y, 1);
+    } else {
+      XClearArea(dpy, disp.win, ann_tbl[i].x, ann_tbl[i].y, ann_tbl[i].width,
+                 ann_tbl[i].height, False);
     }
+  }
   refresh_icon();
 }
 
@@ -483,9 +476,8 @@ void init_annunc(void) {
   int i;
 
   for (i = 0; ann_tbl[i].bit; i++) {
-    ann_tbl[i].pixmap = XCreateBitmapFromData(dpy, disp.win,
-                                              (char *)ann_tbl[i].bits,
-                                          ann_tbl[i].width,
-                                              ann_tbl[i].height);
+    ann_tbl[i].pixmap =
+        XCreateBitmapFromData(dpy, disp.win, (char *)ann_tbl[i].bits,
+                              ann_tbl[i].width, ann_tbl[i].height);
   }
 }

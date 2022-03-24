@@ -44,8 +44,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "constants.h"
 #include "resources.h"
@@ -90,18 +90,19 @@ where options include:\n\
     -xrm        <resource>       set Xresource <resource>\n\
     -/+throttle			 turn off/on speed emulation\n\
     -/+netbook			 turn off/on netbook layout\n\
-\n", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL, progname);
+\n",
+          VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL, progname);
 
   fflush(stdout);
-  exit (1);
+  exit(1);
 }
 
 void show_version(void) {
   fprintf(stdout, "\n\
 %s Version %d.%d.%d, x48 is Copyright (c) 1994-2005 by Eddie C. Dost <ecd@dressler.de>.\n\
 Compiled on %s by <%s> #%d\n\n",
-     progname, VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
-         COMPILE_TIME, COMPILE_BY, COMPILE_VERSION);
+          progname, VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL, COMPILE_TIME,
+          COMPILE_BY, COMPILE_VERSION);
 }
 
 void show_copyright(void) {

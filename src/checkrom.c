@@ -39,8 +39,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "global.h"
 #include "romio.h"
@@ -48,7 +48,7 @@
 unsigned char *rom;
 unsigned short rom_crc, crc;
 
-int   verbose = 0;
+int verbose = 0;
 char *progname;
 
 #define calc_crc(n) (crc = ((crc >> 4) ^ (((crc ^ n) & 0xf) * 0x1081)))
@@ -61,14 +61,13 @@ int main(int argc, char **argv) {
 
   if (argc < 2) {
     fprintf(stderr, "usage: %s rom-file\n", argv[0]);
-    exit (1);
+    exit(1);
   }
 
-  if (!read_rom_file(argv[1], &rom, &rom_size))
-    {
-      fprintf(stderr, "%s: can\'t read ROM from %s\n", argv[0], argv[1]);
-      exit (1);
-    }
+  if (!read_rom_file(argv[1], &rom, &rom_size)) {
+    fprintf(stderr, "%s: can\'t read ROM from %s\n", argv[0], argv[1]);
+    exit(1);
+  }
 
   if (opt_gx != 0)
     ver_addr = 0x7ffbf;
@@ -81,7 +80,6 @@ int main(int argc, char **argv) {
   }
   version[6] = '\0';
   printf("ROM Version is %s\n", version);
-
 
   for (i = 0x100; i < 0x140; i++) {
     rom[i] = 0x0;
