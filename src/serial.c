@@ -144,7 +144,7 @@ int serial_init(void) {
         wire_name = strdup(tty_dev_name);
       }
     }
-#elif defined(LINUX)
+#elif defined(LINUX) || defined(__APPLE__)
     /* Unix98 PTY (Preferred) */
     if ((wire_fd = open("/dev/ptmx", O_RDWR | O_NONBLOCK, 0666)) >= 0) {
       grantpt(wire_fd);
