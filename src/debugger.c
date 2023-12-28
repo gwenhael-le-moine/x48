@@ -982,7 +982,7 @@ struct se {
   struct se *se_next;
 };
 
-char *get_stack(void) {
+void get_stack(void) {
   word_20 dsktop, dskbot;
   word_20 sp = 0, end = 0, ent = 0;
   word_20 ram_base, ram_mask;
